@@ -14,7 +14,7 @@ class Bottle extends Phaser.Physics.Arcade.Sprite
         else
         this.body.reset(x, y-50);
 
-        //@ts-ignore
+        //@ts-ignore sd
         this.body.setAllowGravity(false)
 
         this.setActive(true);

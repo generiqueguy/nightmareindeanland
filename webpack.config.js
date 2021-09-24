@@ -24,15 +24,16 @@ module.exports = {
   },
 
   output: {
-    filename: '[name].app.bundle.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    publicPath: '/'
   },
 
   mode: process.env.NODE_ENV == 'production' ? 'production' : 'development',
 
   devServer: {
-    contentBase: path.resolve(__dirname, 'dist'),
-    open: true,
+    
+    open: true
   },
 
   plugins: [
@@ -50,18 +51,5 @@ module.exports = {
       'typeof CANVAS_RENDERER': JSON.stringify(true),
       'typeof WEBGL_RENDERER': JSON.stringify(true),
     }),
-  ],
-
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        commons: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all',
-          filename: '[name].app.bundle.js',
-        },
-      },
-    },
-  },
+  ]
 };

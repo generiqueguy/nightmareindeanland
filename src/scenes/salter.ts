@@ -8,36 +8,36 @@ export class Salter extends Phaser.Scene{
 
     preload ()
     {
-        this.load.image('bg', 'assets/background.png');
+        this.load.image('bg', '../../assets/background.png');
 
         //dean idle anim
-        this.load.image('dean', 'assets/dean/deanidle.png');
+        this.load.image('dean', '../../assets/dean/deanidle.png');
 
         //dean run animations
-        this.load.image('deanRun1', 'assets/dean/deanrun2.png');
-        this.load.image('deanRun2', 'assets/dean/deanrun3.png');
-        this.load.image('deanRun3', 'assets/dean/deanrun4.png');
-        this.load.image('deanRun4', 'assets/dean/deanrun5.png');
-        this.load.image('deanRun5', 'assets/dean/deanrun6.png');
+        this.load.image('deanRun1', '../../assets/dean/deanrun2.png');
+        this.load.image('deanRun2', '../../assets/dean/deanrun3.png');
+        this.load.image('deanRun3', '../../assets/dean/deanrun4.png');
+        this.load.image('deanRun4', '../../assets/dean/deanrun5.png');
+        this.load.image('deanRun5', '../../assets/dean/deanrun6.png');
         
         //dean jump animations
-        this.load.image('deanJump1', 'assets/dean/deanjump.png');
-        this.load.image('deanJump2', 'assets/dean/deanjump2.png');
-        this.load.image('deanJump3', 'assets/dean/deanjump3.png');
+        this.load.image('deanJump1', '../../assets/dean/deanjump.png');
+        this.load.image('deanJump2', '../../assets/dean/deanjump2.png');
+        this.load.image('deanJump3', '../../assets/dean/deanjump3.png');
 
         //dean crouch animation
-        this.load.image('deanCrouch1', 'assets/dean/deancrouch.png');
+        this.load.image('deanCrouch1', '../../assets/dean/deancrouch.png');
 
         //dean throw animations
-        this.load.image('deanThrow1', 'assets/dean/deanthrow1.png');
-        this.load.image('deanThrow2', 'assets/dean/deanthrow2.png');
-        this.load.image('deanThrow3', 'assets/dean/deanthrow3.png');
+        this.load.image('deanThrow1', '../../assets/dean/deanthrow1.png');
+        this.load.image('deanThrow2', '../../assets/dean/deanthrow2.png');
+        this.load.image('deanThrow3', '../../assets/dean/deanthrow3.png');
 
         //car
-        this.load.image('car', 'assets/objects/CAR.png');
+        this.load.image('car', '../../assets/objects/CAR.png');
 
         //bottle
-        this.load.image('bottle', 'assets/placeholders/bottle.png')
+        this.load.image('bottle', '../../assets/placeholders/bottle.png')
     }
 
     projectiles;
@@ -52,6 +52,7 @@ export class Salter extends Phaser.Scene{
 
         // Listen to space keys
         this.input.keyboard.on('keydown_SPACE', this.fireProjectile, this);
+        console.log("after keyboard input ")
 
         
 
@@ -59,6 +60,7 @@ export class Salter extends Phaser.Scene{
         this.platforms.create(1500,600,'car').setScale(0.5).setSize(0.5).refreshBody();
 
         this.bottles = new Bottles(this);
+        console.log(this.bottles);
 
         this.player = this.physics.add.sprite(280,550,'dean');
         this.player.setScale(0.7);
@@ -176,10 +178,10 @@ export class Salter extends Phaser.Scene{
         else if (this.cursors.down.isUp && this.cursors.up.isUp 
         && this.cursors.right.isUp && this.cursors.left.isUp)
         {
-            //this.player.setVelocityY(0);
+            this.player.setVelocityY(0);
             this.player.setVelocityX(0);
-            //this.player.anims.stop();
-            //this.player.anims.play('deanIdle', true)
+            this.player.anims.stop();
+            this.player.anims.play('deanIdle', true)
         }
             
         this.bottles.children.entries.forEach(element => {
@@ -189,6 +191,7 @@ export class Salter extends Phaser.Scene{
     }
 
     fireProjectile() {
+        console.log("hello");
         this.bottles.fireBottle(this.player, this.deanCrouching);
         this.player.anims.play('deanThrow', true);
     }

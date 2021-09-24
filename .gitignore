@@ -1,7 +1,8 @@
 # Ignore built ts files
-dist/**/*
+dist/
 
 # Dependency directory
 node_modules
 
-src/assets/
+assets/
+lib/
