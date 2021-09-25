@@ -35,6 +35,9 @@ export class Salter extends Phaser.Scene{
 
         //car
         this.load.image('car', '../../assets/objects/CAR.png');
+        this.load.image('carbottom', '../../assets/objects/carbottom.png');
+        this.load.image('cartop', '../../assets/objects/cartop.png');
+
 
         //bottle
         this.load.image('bottle', '../../assets/placeholders/bottle.png')
@@ -45,22 +48,31 @@ export class Salter extends Phaser.Scene{
     player;
     bottles;
     cursors;
+    input;
+    spacebar;
 
+    fireProjectile() {
+        this.bottles.fireBottle(this.player, this.deanCrouching);
+        this.player.anims.play('deanThrow', true);
+    }
     create ()
-    {
+    {        
         this.add.image(4000, 300, 'bg')
 
         // Listen to space keys
-        this.input.keyboard.on('keydown_SPACE', this.fireProjectile, this);
+        //this.input.keyboard.on('keydown_SPACE', this.fireProjectile, this);
+
+        this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
         console.log("after keyboard input ")
 
         
 
         this.platforms = this.physics.add.staticGroup();
-        this.platforms.create(1500,600,'car').setScale(0.5).setSize(0.5).refreshBody();
+        this.platforms.create(1513,523,'cartop').setScale(0.5).setSize(0.5).refreshBody();
+        this.platforms.create(1500,600,'carbottom').setScale(0.5).setSize(0.5).refreshBody();
 
         this.bottles = new Bottles(this);
-        console.log(this.bottles);
 
         this.player = this.physics.add.sprite(280,550,'dean');
         this.player.setScale(0.7);
@@ -79,7 +91,7 @@ export class Salter extends Phaser.Scene{
 
         this.cameras.main.setBounds(0, 0, 8000, 800);
         this.cameras.main.startFollow(this.player);   
-
+        
 
 
         this.anims.create({
@@ -143,8 +155,20 @@ export class Salter extends Phaser.Scene{
     deanCrouching = false;
 
     update ()
-    {
-        if (this.cursors.left.isDown)
+    {   
+        if (this.cursors.up.isDown && 
+        (this.cursors.right.isDown || this.cursors.left.isDown)
+        //&& this.player.body.touching.down
+        )
+        {
+            this.player.setVelocityY(-200);
+            this.player.anims.play('deanJump', true)
+            this.deanCrouching = false;
+        }
+        else if (this.spacebar.isDown){
+            this.fireProjectile();
+        }
+        else if (this.cursors.left.isDown)
         {
             this.player.flipX = true;
             this.player.setVelocityX(-160);
@@ -178,7 +202,6 @@ export class Salter extends Phaser.Scene{
         else if (this.cursors.down.isUp && this.cursors.up.isUp 
         && this.cursors.right.isUp && this.cursors.left.isUp)
         {
-            this.player.setVelocityY(0);
             this.player.setVelocityX(0);
             this.player.anims.stop();
             this.player.anims.play('deanIdle', true)
@@ -190,10 +213,6 @@ export class Salter extends Phaser.Scene{
 
     }
 
-    fireProjectile() {
-        console.log("hello");
-        this.bottles.fireBottle(this.player, this.deanCrouching);
-        this.player.anims.play('deanThrow', true);
-    }
+
 }
 
