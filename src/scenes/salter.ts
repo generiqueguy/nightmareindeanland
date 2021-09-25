@@ -50,10 +50,16 @@ export class Salter extends Phaser.Scene{
     cursors;
     input;
     spacebar;
+    carTop;
+    carBottom;
+    lastFired = 0;
 
-    fireProjectile() {
-        this.bottles.fireBottle(this.player, this.deanCrouching);
-        this.player.anims.play('deanThrow', true);
+    fireProjectile(time) {
+        if(time > this.lastFired){
+            this.bottles.fireBottle(this.player, this.deanCrouching);
+            this.player.anims.play('deanThrow', true);
+            this.lastFired = time + 420;
+        }
     }
     create ()
     {        
@@ -69,13 +75,14 @@ export class Salter extends Phaser.Scene{
         
 
         this.platforms = this.physics.add.staticGroup();
-        this.platforms.create(1513,523,'cartop').setScale(0.5).setSize(0.5).refreshBody();
-        this.platforms.create(1500,600,'carbottom').setScale(0.5).setSize(0.5).refreshBody();
+        this.carTop = this.physics.add.staticImage(1513,523,'cartop').setScale(0.5).refreshBody().setBodySize(200,50, true);
+        this.carBottom = this.physics.add.staticImage(1500,600,'carbottom').setScale(0.5).refreshBody().setSize(400, 100);
 
         this.bottles = new Bottles(this);
 
         this.player = this.physics.add.sprite(280,550,'dean');
         this.player.setScale(0.7);
+        this.player.setBodySize(200,300, true);
         this.player.setBounce(0.1);
 
 
@@ -154,8 +161,9 @@ export class Salter extends Phaser.Scene{
     deanThrowing = false;
     deanCrouching = false;
 
-    update ()
+    update (time)
     {   
+        this.physics.world.collide(this.player, [this.carTop, this.carBottom])
         if (this.cursors.up.isDown && 
         (this.cursors.right.isDown || this.cursors.left.isDown)
         //&& this.player.body.touching.down
@@ -166,7 +174,7 @@ export class Salter extends Phaser.Scene{
             this.deanCrouching = false;
         }
         else if (this.spacebar.isDown){
-            this.fireProjectile();
+            this.fireProjectile(time);
         }
         else if (this.cursors.left.isDown)
         {
