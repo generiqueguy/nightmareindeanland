@@ -30,7 +30,7 @@ class Bottle extends Phaser.Physics.Arcade.Sprite
     {
         super.preUpdate(time, delta);
 
-        if (this.y <= -32)
+        if (this.x <= -400)
         {
             this.setActive(false);
             this.setVisible(false);
@@ -45,7 +45,7 @@ export class Bottles extends Phaser.Physics.Arcade.Group
         super(scene.physics.world, scene);
 
         this.createMultiple({
-            frameQuantity: 10,
+            frameQuantity: 6,
             key: 'bottle',
             active: false,
             visible: false,

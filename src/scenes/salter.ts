@@ -40,7 +40,8 @@ export class Salter extends Phaser.Scene{
 
 
         //bottle
-        this.load.image('bottle', '../../assets/placeholders/bottle.png')
+        this.load.image('bottle', '../../assets/placeholders/bottle.png');
+        this.load.image('bottlebreak', '../../assets/placeholders/bottlebreak.png')
     }
 
     projectiles;
@@ -66,11 +67,7 @@ export class Salter extends Phaser.Scene{
         this.add.image(4000, 300, 'bg')
 
         // Listen to space keys
-        //this.input.keyboard.on('keydown_SPACE', this.fireProjectile, this);
-
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
-        console.log("after keyboard input ")
 
         
 
@@ -164,6 +161,11 @@ export class Salter extends Phaser.Scene{
     update (time)
     {   
         this.physics.world.collide(this.player, [this.carTop, this.carBottom])
+        this.physics.world.collide(this.bottles, [this.carTop, this.carBottom],(collidee, collider)=>{
+
+            collider.setActive(false);
+            collider.destroy();
+        }, null)
         if (this.cursors.up.isDown && 
         (this.cursors.right.isDown || this.cursors.left.isDown)
         //&& this.player.body.touching.down
