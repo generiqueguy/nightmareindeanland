@@ -162,9 +162,7 @@ export class Salter extends Phaser.Scene{
     {   
         this.physics.world.collide(this.player, [this.carTop, this.carBottom])
         this.physics.world.collide(this.bottles, [this.carTop, this.carBottom],(collidee, collider)=>{
-
             collider.setActive(false);
-            collider.destroy();
         }, null)
         if (this.cursors.up.isDown && 
         (this.cursors.right.isDown || this.cursors.left.isDown)

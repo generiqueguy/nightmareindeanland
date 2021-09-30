@@ -10,9 +10,9 @@ class Bottle extends Phaser.Physics.Arcade.Sprite
         console.log(deanCrouching);
 
         if(deanCrouching)
-        this.body.reset(x, y+10);
+            this.body.reset(x, y+10);
         else
-        this.body.reset(x, y-50);
+            this.body.reset(x, y-50);
 
         //@ts-ignore sd
         this.body.setAllowGravity(false)
@@ -30,7 +30,7 @@ class Bottle extends Phaser.Physics.Arcade.Sprite
     {
         super.preUpdate(time, delta);
 
-        if (this.x <= -400)
+        if (this.x <= -100)
         {
             this.setActive(false);
             this.setVisible(false);
