@@ -1,4 +1,4 @@
-class Bottle extends Phaser.Physics.Arcade.Sprite
+export class Bottle extends Phaser.Physics.Arcade.Sprite
 {
     constructor (scene, x, y)
     {
@@ -7,8 +7,6 @@ class Bottle extends Phaser.Physics.Arcade.Sprite
 
     fire (x, y, flipX, deanCrouching)
     {
-        console.log(deanCrouching);
-
         if(deanCrouching)
             this.body.reset(x, y+10);
         else
@@ -35,6 +33,7 @@ class Bottle extends Phaser.Physics.Arcade.Sprite
             this.setActive(false);
             this.setVisible(false);
         }
+        this.rotation += 0.05;
     }
 }
 

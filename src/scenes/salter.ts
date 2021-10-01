@@ -1,5 +1,6 @@
-import { Bottles } from "../sprites/weapons/bottles";
+import { Bottle, Bottles } from "../sprites/weapons/bottles";
 import * as Phaser from 'phaser';
+import { Thug } from "../sprites/enemies/thug";
 
 export class Salter extends Phaser.Scene{
     constructor(){
@@ -42,6 +43,21 @@ export class Salter extends Phaser.Scene{
         //bottle
         this.load.image('bottle', '../../assets/placeholders/bottle.png');
         this.load.image('bottlebreak', '../../assets/placeholders/bottlebreak.png')
+
+        //thug walking
+        this.load.image('thug', '../../assets/enemies/thug/walking/thug1.png');
+        this.load.image('thugwalk1', '../../assets/enemies/thug/walking/thugwalk1.png');
+        this.load.image('thugwalk2', '../../assets/enemies/thug/walking/thugwalk2.png');
+        this.load.image('thugwalk3', '../../assets/enemies/thug/walking/thugwalk3.png');
+        this.load.image('thugwalk4', '../../assets/enemies/thug/walking/thugwalk4.png');
+
+        //thug damaged
+        this.load.image('thugdamage1', '../../assets/enemies/thug/damage/thugdamage1.png');
+        this.load.image('thugdamage2', '../../assets/enemies/thug/damage/thugdamage2.png');
+        this.load.image('thugdamage3', '../../assets/enemies/thug/damage/thugdamage3.png');
+        this.load.image('thugdamage4', '../../assets/enemies/thug/damage/thugdamage4.png');
+        this.load.image('thugdamage5', '../../assets/enemies/thug/damage/thugdamage5.png');
+        this.load.image('thugdamage6', '../../assets/enemies/thug/damage/thugdamage6.png');
     }
 
     projectiles;
@@ -54,6 +70,7 @@ export class Salter extends Phaser.Scene{
     carTop;
     carBottom;
     lastFired = 0;
+    enemies;
 
     fireProjectile(time) {
         if(time > this.lastFired){
@@ -70,7 +87,7 @@ export class Salter extends Phaser.Scene{
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         
-
+       
         this.platforms = this.physics.add.staticGroup();
         this.carTop = this.physics.add.staticImage(1513,523,'cartop').setScale(0.5).refreshBody().setBodySize(200,50, true);
         this.carBottom = this.physics.add.staticImage(1500,600,'carbottom').setScale(0.5).refreshBody().setSize(400, 100);
@@ -82,13 +99,19 @@ export class Salter extends Phaser.Scene{
         this.player.setBodySize(200,300, true);
         this.player.setBounce(0.1);
 
+        this.enemies = this.physics.add.sprite(640, 550, 'thug');
+        this.enemies.setScale(0.4);
+        this.enemies.flipX = true;
+        
 
+        // this.physics.add.collider(this.player, this.platforms);
+        // this.physics.add.collider(this.bottles, this.platforms);
+        // this.physics.add.collider(this.bottles, this.enemies);
 
-        this.physics.add.collider(this.player, this.platforms);
-        this.physics.add.collider(this.bottles, this.platforms);
         this.physics.world.setBounds(0, 0, 8000, 650);
 
         this.player.setCollideWorldBounds(true);
+        this.enemies.setCollideWorldBounds(true);
 
         //  Input Events
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -153,17 +176,83 @@ export class Salter extends Phaser.Scene{
             frameRate: 10,
             repeat: 0
         });
+
+        this.anims.create({
+            key: 'thugWalk',
+            frames: [
+                {key: 'thugwalk1'},
+                {key: 'thugwalk2'},
+                {key: 'thugwalk3'},
+                {key: 'thugwalk4'}
+            ],
+            frameRate: 10,
+            repeat: 0
+        });
+        this.anims.create({
+            key: 'thugDamage',
+            frames: [
+                {key: 'thugdamage1'},
+                {key: 'thugdamage2'},
+                {key: 'thugdamage3'},
+                {key: 'thugdamage4'},
+                {key: 'thugdamage5'},
+                {key: 'thugdamage6'}
+            ],
+            frameRate: 10,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'thugIdle',
+            frames: [
+                {key: 'thug'}
+            ],
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'breakBottle',
+            frames: [
+                {key: 'bottlebreak'}
+            ],
+            frameRate: 10,
+            repeat: -1
+        });
+
+    //when the bottles hit the car
+    this.physics.add.collider(this.bottles, this.enemies,(enemy, bottle)=>{
+        enemy.body.stop();
+        console.log("hello");
+        (bottle as Bottle).play('breakBottle');
+        bottle.destroy();
+        (enemy as Thug).anims.play('thugDamage');
+        bottle.setActive(false);
+        
+        }, null);
+
+        //when dean hits the car
+        this.physics.world.collide(this.player, [this.carTop, this.carBottom]);
+        //when the bottles hit the car
+        this.physics.world.collide(this.bottles, [this.carTop, this.carBottom],(collidee, collider)=>{
+            collider.setActive(false);
+
+            
+        }, null, this);
     }
+                
 
     deanThrowing = false;
     deanCrouching = false;
 
     update (time)
     {   
-        this.physics.world.collide(this.player, [this.carTop, this.carBottom])
-        this.physics.world.collide(this.bottles, [this.carTop, this.carBottom],(collidee, collider)=>{
-            collider.setActive(false);
-        }, null)
+
+
+
+
+
+        //listen to cursor inputs
         if (this.cursors.up.isDown && 
         (this.cursors.right.isDown || this.cursors.left.isDown)
         //&& this.player.body.touching.down
@@ -214,11 +303,6 @@ export class Salter extends Phaser.Scene{
             this.player.anims.stop();
             this.player.anims.play('deanIdle', true)
         }
-            
-        this.bottles.children.entries.forEach(element => {
-            element.angle +=1
-        });
-
     }
 
 
