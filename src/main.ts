@@ -1,5 +1,7 @@
 import * as Phaser from 'phaser';
+import { Intro } from './scenes/intro';
 import { Salter } from './scenes/salter';
+import { Title } from './scenes/title';
 
 var config = {
     type: Phaser.AUTO,
@@ -16,9 +18,6 @@ var config = {
 }
 };
 
-var player;
-var cursors;
-var platforms;
-var cameras;
+
 
 var game = new Phaser.Game(config);

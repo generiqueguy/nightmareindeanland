@@ -39,6 +39,9 @@ export class Salter extends Phaser.Scene{
         this.load.image('carbottom', '../../assets/objects/carbottom.png');
         this.load.image('cartop', '../../assets/objects/cartop.png');
 
+        //fero
+        this.load.image('dumpster', '../../assets/objects/ferobin.png')
+
 
         //bottle
         this.load.image('bottle', '../../assets/placeholders/bottle.png');
@@ -71,6 +74,8 @@ export class Salter extends Phaser.Scene{
     carBottom;
     lastFired = 0;
     enemies;
+    objects;
+    dumpster;
 
     fireProjectile(time) {
         if(time > this.lastFired){
@@ -85,23 +90,33 @@ export class Salter extends Phaser.Scene{
 
         // Listen to space keys
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
-        
-       
-        this.platforms = this.physics.add.staticGroup();
-        this.carTop = this.physics.add.staticImage(1513,523,'cartop').setScale(0.5).refreshBody().setBodySize(200,50, true);
-        this.carBottom = this.physics.add.staticImage(1500,600,'carbottom').setScale(0.5).refreshBody().setSize(400, 100);
-
-        this.bottles = new Bottles(this);
+        //  Input Events
+        this.cursors = this.input.keyboard.createCursorKeys();
 
         this.player = this.physics.add.sprite(280,550,'dean');
         this.player.setScale(0.7);
         this.player.setBodySize(200,300, true);
         this.player.setBounce(0.1);
 
+        this.cameras.main.setBounds(0, 0, 8000, 800);
+        this.cameras.main.startFollow(this.player);
+        
+        this.bottles = new Bottles(this);
+
+        
+       
+        this.platforms = this.physics.add.staticGroup();
+        this.carTop = this.physics.add.staticImage(1513,523,'cartop').setScale(0.5).refreshBody().setBodySize(200,50, true);
+        this.carBottom = this.physics.add.staticImage(1500,600,'carbottom').setScale(0.5).refreshBody().setSize(400, 100);
+        this.dumpster = this.physics.add.staticImage(3000, 550, 'dumpster').setScale(0.5).refreshBody();
+        
+
+
+
         this.enemies = this.physics.add.sprite(640, 550, 'thug');
         this.enemies.setScale(0.4);
         this.enemies.flipX = true;
+        this.enemies.setImmovable();
         
 
         // this.physics.add.collider(this.player, this.platforms);
@@ -113,11 +128,7 @@ export class Salter extends Phaser.Scene{
         this.player.setCollideWorldBounds(true);
         this.enemies.setCollideWorldBounds(true);
 
-        //  Input Events
-        this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.cameras.main.setBounds(0, 0, 8000, 800);
-        this.cameras.main.startFollow(this.player);   
         
 
 
@@ -158,7 +169,8 @@ export class Salter extends Phaser.Scene{
             frames: [
                 {key: 'deanCrouch1'},
                 {key: 'deanJump1'},
-                {key: 'deanRun2'}
+                {key: 'deanJump2'},
+                {key: 'deanJump3'}
 
             ],
             frameRate: 5,
@@ -198,7 +210,7 @@ export class Salter extends Phaser.Scene{
                 {key: 'thugdamage5'},
                 {key: 'thugdamage6'}
             ],
-            frameRate: 10,
+            frameRate: 15,
             repeat: 0
         });
 
@@ -223,22 +235,19 @@ export class Salter extends Phaser.Scene{
     //when the bottles hit the car
     this.physics.add.collider(this.bottles, this.enemies,(enemy, bottle)=>{
         enemy.body.stop();
+        (enemy as Thug).flipX = false;
         console.log("hello");
-        (bottle as Bottle).play('breakBottle');
-        bottle.destroy();
+        (bottle as Bottle).reset(this.player);
         (enemy as Thug).anims.play('thugDamage');
-        bottle.setActive(false);
-        
         }, null);
 
-        //when dean hits the car
-        this.physics.world.collide(this.player, [this.carTop, this.carBottom]);
-        //when the bottles hit the car
-        this.physics.world.collide(this.bottles, [this.carTop, this.carBottom],(collidee, collider)=>{
-            collider.setActive(false);
-
-            
-        }, null, this);
+    //when dean hits the car
+    this.physics.add.collider(this.player, [this.carTop, this.carBottom]);
+    //when the bottles hit the car
+    this.physics.add.collider(this.bottles, [this.carTop, this.carBottom],(collidee, bottle)=>{
+        (bottle as Bottle).reset(this.player);
+        
+    }, null);
     }
                 
 
@@ -247,18 +256,13 @@ export class Salter extends Phaser.Scene{
 
     update (time)
     {   
-
-
-
-
-
         //listen to cursor inputs
         if (this.cursors.up.isDown && 
         (this.cursors.right.isDown || this.cursors.left.isDown)
-        //&& this.player.body.touching.down
+        && this.player.body.blocked.down
         )
         {
-            this.player.setVelocityY(-200);
+            this.player.setVelocityY(-250);
             this.player.anims.play('deanJump', true)
             this.deanCrouching = false;
         }
@@ -283,7 +287,7 @@ export class Salter extends Phaser.Scene{
         
         }
         else if (this.cursors.up.isDown
-        //&& this.player.body.touching.down
+        && this.player.body.blocked.down
         )
         {
             this.player.setVelocityY(-200);

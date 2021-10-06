@@ -1,4 +1,4 @@
-class Intro extends Phaser.Scene{
+export class Intro extends Phaser.Scene{
     constructor(){
         super("Intro")
     }

@@ -5,9 +5,15 @@ export class Bottle extends Phaser.Physics.Arcade.Sprite
         super(scene, x, y, 'bottle');
     }
 
-    fire (x, y, flipX, deanCrouching)
+    reset(player){
+        this.setVisible(false);
+        this.setActive(false);
+        this.body.reset(0,0);
+    }
+
+    fire (x, y, flipX, crouching)
     {
-        if(deanCrouching)
+        if(crouching)
             this.body.reset(x, y+10);
         else
             this.body.reset(x, y-50);
