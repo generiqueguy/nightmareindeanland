@@ -1,4 +1,4 @@
-class Title extends Phaser.Scene{
+export class Title extends Phaser.Scene{
     constructor(){
         super("Title")
     }
@@ -10,7 +10,7 @@ class Title extends Phaser.Scene{
     text;
     create(){
         console.log("Title Created");
-        this.input.keyboard.on('keydown_ENTER', this.moveForward, this);
+        this.input.keyboard.on('keydown_ENTER', this.moveForward);
         const style = { font: "bold 32px Arial", fill: "white" };
         this.text = this.add.text(600, 600, 'PRESS START', style);
         this.titleText = this.add.text(300, 300, 'Nightmare In Deanland', style);

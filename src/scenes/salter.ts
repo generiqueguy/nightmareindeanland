@@ -1,5 +1,8 @@
-import { Bottles } from "../sprites/weapons/bottles";
+import { Bottle, Bottles } from "../sprites/weapons/bottles";
 import * as Phaser from 'phaser';
+import { Thug } from "../sprites/enemies/thug";
+import HUD from "./hud";
+import { Dean } from "../sprites/characters/dean";
 
 export class Salter extends Phaser.Scene{
     constructor(){
@@ -38,10 +41,34 @@ export class Salter extends Phaser.Scene{
         this.load.image('carbottom', '../../assets/objects/carbottom.png');
         this.load.image('cartop', '../../assets/objects/cartop.png');
 
+        //fero
+        this.load.image('dumpster', '../../assets/objects/ferobin.png')
+
 
         //bottle
         this.load.image('bottle', '../../assets/placeholders/bottle.png');
         this.load.image('bottlebreak', '../../assets/placeholders/bottlebreak.png')
+
+        //thug walking
+        this.load.image('thug', '../../assets/enemies/thug/walking/thug1.png');
+        this.load.image('thugwalk1', '../../assets/enemies/thug/walking/thugwalk1.png');
+        this.load.image('thugwalk2', '../../assets/enemies/thug/walking/thugwalk2.png');
+        this.load.image('thugwalk3', '../../assets/enemies/thug/walking/thugwalk3.png');
+        this.load.image('thugwalk4', '../../assets/enemies/thug/walking/thugwalk4.png');
+
+        //thug damaged
+        this.load.image('thugdamage1', '../../assets/enemies/thug/damage/thugdamage1.png');
+        this.load.image('thugdamage2', '../../assets/enemies/thug/damage/thugdamage2.png');
+        this.load.image('thugdamage3', '../../assets/enemies/thug/damage/thugdamage3.png');
+        this.load.image('thugdamage4', '../../assets/enemies/thug/damage/thugdamage4.png');
+        this.load.image('thugdamage5', '../../assets/enemies/thug/damage/thugdamage5.png');
+        this.load.image('thugdamage6', '../../assets/enemies/thug/damage/thugdamage6.png');
+
+        //thug attack
+        this.load.image('thugcut1', '../../assets/enemies/thug/attack/thugcut1.png');
+        this.load.image('thugcut2', '../../assets/enemies/thug/attack/thugcut2.png');
+        this.load.image('thugcut3', '../../assets/enemies/thug/attack/thugcut3.png');
+        this.load.image('thugcut4', '../../assets/enemies/thug/attack/thugcut4.png');
     }
 
     projectiles;
@@ -54,6 +81,9 @@ export class Salter extends Phaser.Scene{
     carTop;
     carBottom;
     lastFired = 0;
+    enemies;
+    objects;
+    dumpster;
 
     fireProjectile(time) {
         if(time > this.lastFired){
@@ -68,33 +98,45 @@ export class Salter extends Phaser.Scene{
 
         // Listen to space keys
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
-        
-
-        this.platforms = this.physics.add.staticGroup();
-        this.carTop = this.physics.add.staticImage(1513,523,'cartop').setScale(0.5).refreshBody().setBodySize(200,50, true);
-        this.carBottom = this.physics.add.staticImage(1500,600,'carbottom').setScale(0.5).refreshBody().setSize(400, 100);
-
-        this.bottles = new Bottles(this);
+        //  Input Events
+        this.cursors = this.input.keyboard.createCursorKeys();
 
         this.player = this.physics.add.sprite(280,550,'dean');
         this.player.setScale(0.7);
         this.player.setBodySize(200,300, true);
         this.player.setBounce(0.1);
 
+        this.cameras.main.setBounds(0, 0, 8000, 800);
+        this.cameras.main.startFollow(this.player);
+        
+        this.bottles = new Bottles(this);
+
+        
+       
+        this.platforms = this.physics.add.staticGroup();
+        this.carTop = this.physics.add.staticImage(1513,523,'cartop').setScale(0.5).refreshBody().setBodySize(200,50, true);
+        this.carBottom = this.physics.add.staticImage(1500,600,'carbottom').setScale(0.5).refreshBody().setSize(400, 100);
+        this.dumpster = this.physics.add.staticImage(3000, 550, 'dumpster').setScale(0.5).refreshBody();
+        
 
 
-        this.physics.add.collider(this.player, this.platforms);
-        this.physics.add.collider(this.bottles, this.platforms);
+
+        this.enemies = this.physics.add.sprite(640, 550, 'thug');
+        this.enemies.setScale(0.4);
+        this.enemies.flipX = true;
+        this.enemies.setImmovable();
+        
+
+        // this.physics.add.collider(this.player, this.platforms);
+        // this.physics.add.collider(this.bottles, this.platforms);
+        // this.physics.add.collider(this.bottles, this.enemies);
+
         this.physics.world.setBounds(0, 0, 8000, 650);
 
         this.player.setCollideWorldBounds(true);
+        this.enemies.setCollideWorldBounds(true);
 
-        //  Input Events
-        this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.cameras.main.setBounds(0, 0, 8000, 800);
-        this.cameras.main.startFollow(this.player);   
         
 
 
@@ -135,7 +177,8 @@ export class Salter extends Phaser.Scene{
             frames: [
                 {key: 'deanCrouch1'},
                 {key: 'deanJump1'},
-                {key: 'deanRun2'}
+                {key: 'deanJump2'},
+                {key: 'deanJump3'}
 
             ],
             frameRate: 5,
@@ -153,23 +196,102 @@ export class Salter extends Phaser.Scene{
             frameRate: 10,
             repeat: 0
         });
+
+        this.anims.create({
+            key: 'thugWalk',
+            frames: [
+                {key: 'thugwalk1'},
+                {key: 'thugwalk2'},
+                {key: 'thugwalk3'},
+                {key: 'thugwalk4'}
+            ],
+            frameRate: 10,
+            repeat: 0
+        });
+        this.anims.create({
+            key: 'thugDamage',
+            frames: [
+                {key: 'thugdamage1'},
+                {key: 'thugdamage2'},
+                {key: 'thugdamage3'},
+                {key: 'thugdamage4'},
+                {key: 'thugdamage5'},
+                {key: 'thugdamage6'}
+            ],
+            frameRate: 15,
+            repeat: 0
+        });
+        this.anims.create({
+            key: 'thugAttack',
+            frames: [
+                {key: 'thugcut1'},
+                {key: 'thugcut2'},
+                {key: 'thugcut3'},
+                {key: 'thugcut4'}
+            ],
+            frameRate: 15,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'thugIdle',
+            frames: [
+                {key: 'thug'}
+            ],
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'breakBottle',
+            frames: [
+                {key: 'bottlebreak'}
+            ],
+            frameRate: 10,
+            repeat: -1
+        });
+
+    //when the bottles hit the car
+    this.physics.add.collider(this.bottles, this.enemies,(enemy, bottle)=>{
+        enemy.body.stop();
+        (enemy as Thug).flipX = false;
+        console.log("hello");
+        (bottle as Bottle).reset(this.player);
+        (enemy as Thug).anims.play('thugDamage');
+        }, null);
+
+    //when dean hits the car
+    this.physics.add.collider(this.player, [this.carTop, this.carBottom]);
+    //when the bottles hit the car
+    this.physics.add.collider(this.bottles, [this.carTop, this.carBottom],(collidee, bottle)=>{
+        (bottle as Bottle).reset(this.player);    
+    }, null);
+    //when dean hits the thug
+    this.physics.add.overlap(this.player, this.enemies, (player, enemy)=>{
+        this.player.setX(-1);
+        (enemy as Thug).anims.play('thugAttack');
+        //this.player.anims.play('')
+        this.events.emit('playerHit', this.player)
+        
+    });
+
+
+    this.scene.launch('HUD');
     }
+                
 
     deanThrowing = false;
     deanCrouching = false;
 
     update (time)
     {   
-        this.physics.world.collide(this.player, [this.carTop, this.carBottom])
-        this.physics.world.collide(this.bottles, [this.carTop, this.carBottom],(collidee, collider)=>{
-            collider.setActive(false);
-        }, null)
+        //listen to cursor inputs
         if (this.cursors.up.isDown && 
         (this.cursors.right.isDown || this.cursors.left.isDown)
-        //&& this.player.body.touching.down
+        && this.player.body.blocked.down
         )
         {
-            this.player.setVelocityY(-200);
+            this.player.setVelocityY(-250);
             this.player.anims.play('deanJump', true)
             this.deanCrouching = false;
         }
@@ -194,7 +316,7 @@ export class Salter extends Phaser.Scene{
         
         }
         else if (this.cursors.up.isDown
-        //&& this.player.body.touching.down
+        && this.player.body.blocked.down
         )
         {
             this.player.setVelocityY(-200);
@@ -214,11 +336,6 @@ export class Salter extends Phaser.Scene{
             this.player.anims.stop();
             this.player.anims.play('deanIdle', true)
         }
-            
-        this.bottles.children.entries.forEach(element => {
-            element.angle +=1
-        });
-
     }
 
 
