@@ -1,6 +1,8 @@
 import { Bottle, Bottles } from "../sprites/weapons/bottles";
 import * as Phaser from 'phaser';
 import { Thug } from "../sprites/enemies/thug";
+import HUD from "./hud";
+import { Dean } from "../sprites/characters/dean";
 
 export class Salter extends Phaser.Scene{
     constructor(){
@@ -61,6 +63,12 @@ export class Salter extends Phaser.Scene{
         this.load.image('thugdamage4', '../../assets/enemies/thug/damage/thugdamage4.png');
         this.load.image('thugdamage5', '../../assets/enemies/thug/damage/thugdamage5.png');
         this.load.image('thugdamage6', '../../assets/enemies/thug/damage/thugdamage6.png');
+
+        //thug attack
+        this.load.image('thugcut1', '../../assets/enemies/thug/attack/thugcut1.png');
+        this.load.image('thugcut2', '../../assets/enemies/thug/attack/thugcut2.png');
+        this.load.image('thugcut3', '../../assets/enemies/thug/attack/thugcut3.png');
+        this.load.image('thugcut4', '../../assets/enemies/thug/attack/thugcut4.png');
     }
 
     projectiles;
@@ -213,6 +221,17 @@ export class Salter extends Phaser.Scene{
             frameRate: 15,
             repeat: 0
         });
+        this.anims.create({
+            key: 'thugAttack',
+            frames: [
+                {key: 'thugcut1'},
+                {key: 'thugcut2'},
+                {key: 'thugcut3'},
+                {key: 'thugcut4'}
+            ],
+            frameRate: 15,
+            repeat: 0
+        });
 
         this.anims.create({
             key: 'thugIdle',
@@ -245,9 +264,19 @@ export class Salter extends Phaser.Scene{
     this.physics.add.collider(this.player, [this.carTop, this.carBottom]);
     //when the bottles hit the car
     this.physics.add.collider(this.bottles, [this.carTop, this.carBottom],(collidee, bottle)=>{
-        (bottle as Bottle).reset(this.player);
-        
+        (bottle as Bottle).reset(this.player);    
     }, null);
+    //when dean hits the thug
+    this.physics.add.overlap(this.player, this.enemies, (player, enemy)=>{
+        this.player.setX(-1);
+        (enemy as Thug).anims.play('thugAttack');
+        //this.player.anims.play('')
+        this.events.emit('playerHit', this.player)
+        
+    });
+
+
+    this.scene.launch('HUD');
     }
                 
 
