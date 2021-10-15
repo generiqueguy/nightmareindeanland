@@ -8,7 +8,7 @@ var config = {
     type: Phaser.AUTO,
     width: 1000,
     height: 800,
-    //scene: [Title, Intro, Salter],
+    //scene: [Title, Intro, Salter, HUD],
     scene: [Salter, HUD],
     physics: {
     default: 'arcade',

@@ -84,6 +84,8 @@ export class Salter extends Phaser.Scene{
     enemies;
     objects;
     dumpster;
+    duration = 0;
+    lastDuration = 0;
 
     fireProjectile(time) {
         if(time > this.lastFired){
@@ -227,7 +229,8 @@ export class Salter extends Phaser.Scene{
                 {key: 'thugcut1'},
                 {key: 'thugcut2'},
                 {key: 'thugcut3'},
-                {key: 'thugcut4'}
+                {key: 'thugcut4'},
+                {key: 'thug'}
             ],
             frameRate: 15,
             repeat: 0
@@ -254,10 +257,12 @@ export class Salter extends Phaser.Scene{
     //when the bottles hit the car
     this.physics.add.collider(this.bottles, this.enemies,(enemy, bottle)=>{
         enemy.body.stop();
-        (enemy as Thug).flipX = false;
+        let thug = enemy as Thug;
+        thug.flipX = false;
         console.log("hello");
         (bottle as Bottle).reset(this.player);
-        (enemy as Thug).anims.play('thugDamage');
+        thug.anims.play('thugDamage');
+        thug.body.destroy();
         }, null);
 
     //when dean hits the car
@@ -267,11 +272,21 @@ export class Salter extends Phaser.Scene{
         (bottle as Bottle).reset(this.player);    
     }, null);
     //when dean hits the thug
-    this.physics.add.overlap(this.player, this.enemies, (player, enemy)=>{
-        this.player.setX(-1);
+    this.physics.add.collider(this.player, this.enemies, (player, enemy)=>{
         (enemy as Thug).anims.play('thugAttack');
+        //probably should put player.damage() here and thug.attack
+        this.player.immune = true;        
+        this.player.alpha = 0.5;
+        
+        if(this.player.flipX){
+            this.player.setVelocityX(100);
+        }
+        else{
+            this.player.setVelocityX(-100);
+        }
         //this.player.anims.play('')
         this.events.emit('playerHit', this.player)
+        //this.cameras.main.shake(32);
         
     });
 
@@ -283,31 +298,32 @@ export class Salter extends Phaser.Scene{
     deanThrowing = false;
     deanCrouching = false;
 
-    update (time)
+    update (time, delta)
     {   
+        this.duration += time;
         //listen to cursor inputs
         if (this.cursors.up.isDown && 
         (this.cursors.right.isDown || this.cursors.left.isDown)
         && this.player.body.blocked.down
         )
         {
-            this.player.setVelocityY(-250);
+            this.player.setVelocityY(-300);
             this.player.anims.play('deanJump', true)
             this.deanCrouching = false;
         }
         else if (this.spacebar.isDown){
             this.fireProjectile(time);
         }
-        else if (this.cursors.left.isDown)
+        else if (this.cursors.left.isDown
+            && this.player.body.blocked.down)
         {
             this.player.flipX = true;
             this.player.setVelocityX(-160);
             this.player.anims.play('deanRight', true);
-            this.deanCrouching = false;
-
-            
+            this.deanCrouching = false;            
         }
-        else if (this.cursors.right.isDown)
+        else if (this.cursors.right.isDown
+            && this.player.body.blocked.down)
         {
             this.player.flipX = false;
             this.player.setVelocityX(160);
