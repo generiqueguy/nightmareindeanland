@@ -55,17 +55,17 @@ export default class DeanApt extends Phaser.Scene {
       let frontframeNames = this.anims.generateFrameNames('8bitdean', {
         start: 1, end: 7,
         prefix: 'deanfront'});
-        this.anims.create({ key: 'walkDown', frames: frontframeNames, frameRate: 10, repeat: -1 });
+        this.anims.create({ key: 'walkDown', frames: frontframeNames, frameRate: 10, repeat: 0 });
 
       let backframeNames = this.anims.generateFrameNames('8bitdean', {
         start: 1, end: 7,
         prefix: 'deanback'})
-        this.anims.create({ key: 'walkUp', frames: backframeNames, frameRate: 10, repeat: -1 });
+        this.anims.create({ key: 'walkUp', frames: backframeNames, frameRate: 10, repeat: 0 });
 
       let sideframeNames = this.anims.generateFrameNames('8bitdean', {
-        start: 1, end: 7,
+        start: 2, end: 7,
         prefix: 'deanside'})
-        this.anims.create({ key: 'walkSide', frames: sideframeNames, frameRate: 10, repeat: -1 });
+        this.anims.create({ key: 'walkSide', frames: sideframeNames, frameRate: 10, repeat: 0 });
 
       
 
@@ -89,8 +89,11 @@ export default class DeanApt extends Phaser.Scene {
         console.log("you touched the fridge");
       }, null);
       this.physics.add.collider(this.player, this.pc, ()=>{
-        if(this.spacebar.isDown)
-        console.log("you touched the computer");
+        if(this.spacebar.isDown){
+        let style = { font: "bold 32px Arial", fill: "white" };
+        console.log("you unsent a message about berzerk");
+        let titleText = this.add.text(-400, 800, "you unsent a message about berzerk", style);
+        }
       }, null);
       this.physics.add.collider(this.player, this.rabbitCage, ()=>{
         if(this.spacebar.isDown)
@@ -103,25 +106,25 @@ export default class DeanApt extends Phaser.Scene {
       if (this.cursors.up.isDown)
       {
           this.player.setVelocityY(-100);
-          this.player.anims.play('walkUp');
+          this.player.anims.play('walkUp', true);
       }
       else if (this.cursors.left.isDown)
       {
           this.player.flipX = true;
           this.player.setVelocityX(-100); 
-          this.player.anims.play('walkSide');        
+          this.player.anims.play('walkSide', true);        
       }
       else if (this.cursors.right.isDown)
       {
           this.player.flipX = false;
           this.player.setVelocityX(100);
-          this.player.anims.play('walkSide');
+          this.player.anims.play('walkSide', true);
       
       }
       else if (this.cursors.down.isDown)
       {
           this.player.setVelocityY(100);
-          this.player.anims.play('walkDown');
+          this.player.anims.play('walkDown', true);
       }
       else if (this.cursors.down.isUp && this.cursors.up.isUp 
       && this.cursors.right.isUp && this.cursors.left.isUp)

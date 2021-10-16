@@ -1,171 +1,173 @@
 {
-	"frames":{
-		"deanfront1":
+	"frames":[
+		
 		{
+			"filename":"deanfront1",
 		    "frame": {"x":3,"y":0,"w":18,"h":31},
 		    "rotated": false,
 		    "trimmed": false,
 		    "spriteSourceSize": {"x":0,"y":0,"w":18,"h":31},
-		    "sourceSize": {"w":18,"h":31}		}	
+		    "sourceSize": {"w":18,"h":31}
 		},
-		"deanfront2":
 		{
+			"filename":"deanfront2",
 		    "frame": {"x":2,"y":33,"w":21,"h":32},
 		    "rotated": false,
 		    "trimmed": false,
 		    "spriteSourceSize": {"x":0,"y":0,"w":21,"h":32},
 		    "sourceSize": {"w":21,"h":32}
 		},
-		"deanfront3":
 		{
+			"filename":"deanfront3",
 		    "frame": {"x":25,"y":35,"w":21,"h":32},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":21,"h":32},
 		    "sourceSize": {"w":21,"h":32}
 		},
-		"deanfront4":
 		{
+			"filename":"deanfront4",
 		    "frame": {"x":46,"y":32,"w":21,"h":32},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":21,"h":32},
 		    "sourceSize": {"w":21,"h":32}
 		},
-		"deanfront5":
 		{
+			"filename":"deanfront5",
 		    "frame": {"x":74,"y":34,"w":21,"h":32},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":21,"h":32},
 		    "sourceSize": {"w":21,"h":32}
 		},
-		"deanfront6":
 		{
+			"filename":"deanfront6",
 		    "frame": {"x":96,"y":34,"w":21,"h":32},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":21,"h":32},
 		    "sourceSize": {"w":21,"h":32}
 		},
-		"deanfront7":
 		{
+			"filename":"deanfront7",
 		    "frame": {"x":120,"y":35,"w":21,"h":32},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":21,"h":32},
 		    "sourceSize": {"w":21,"h":32}
 		},
-		"deanback1":
 		{
+			"filename": "deanback1",
 		    "frame": {"x":21,"y":0,"w":21,"h":32},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":21,"h":32},
 		    "sourceSize": {"w":21,"h":32}
 		},
-		"deanback2":
 		{
+			"filename": "deanback2",
 		    "frame": {"x":2,"y":70,"w":22,"h":33},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":22,"h":33},
 		    "sourceSize": {"w":22,"h":33}
 		},
-		"deanback3":
 		{
+			"filename": "deanback3",
 		    "frame": {"x":26,"y":71,"w":22,"h":33},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":22,"h":33},
 		    "sourceSize": {"w":22,"h":33}
 		},
-		"deanback4":
 		{
+			"filename": "deanback4",
 		    "frame": {"x":50,"y":70,"w":22,"h":33},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":22,"h":33},
 		    "sourceSize": {"w":22,"h":33}
 		},
-		"deanback5":
 		{
+			"filename": "deanback5",
 		    "frame": {"x":73,"y":70,"w":22,"h":33},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":22,"h":33},
 		    "sourceSize": {"w":22,"h":33}
 		},
-		"deanback6":
 		{
+			"filename": "deanback6",
 		    "frame": {"x":98,"y":70,"w":22,"h":33},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":22,"h":33},
 		    "sourceSize": {"w":22,"h":33}
 		},
-		"deanback7":
 		{
+			"filename": "deanback7",
 		    "frame": {"x":122,"y":70,"w":22,"h":33},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":22,"h":33},
 		    "sourceSize": {"w":22,"h":33}
 		},
-		"deanside1":
 		{
+			"filename": "deanside1",
 		    "frame": {"x":41,"y":0,"w":21,"h":32},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":21,"h":32},
 		    "sourceSize": {"w":21,"h":32}
 		},
-		"deanside2":
 		{
+			"filename": "deanside2",
 		    "frame": {"x":0,"y":110,"w":23,"h":32},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":23,"h":32},
 		    "sourceSize": {"w":23,"h":32}
 		},
-		"deanside3":
 		{
+			"filename": "deanside3",
 		    "frame": {"x":25,"y":110,"w":23,"h":32},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":23,"h":32},
 		    "sourceSize": {"w":23,"h":32}
 		},
-		"deanside4":
 		{
+			"filename": "deanside4",
 		    "frame": {"x":49,"y":110,"w":23,"h":32},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":23,"h":32},
 		    "sourceSize": {"w":23,"h":32}
 		},
-		"deanside5":
 		{
+			"filename": "deanside5",
 		    "frame": {"x":72,"y":110,"w":23,"h":32},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":23,"h":32},
 		    "sourceSize": {"w":23,"h":32}
 		},
-		"deanside6":
 		{
+			"filename": "deanside6",
 		    "frame": {"x":99,"y":110,"w":23,"h":32},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":23,"h":32},
 		    "sourceSize": {"w":23,"h":32}
 		},
-		"deanside7":
 		{
+			"filename": "deanside7",
 		    "frame": {"x":123,"y":110,"w":23,"h":32},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":23,"h":32},
 		    "sourceSize": {"w":23,"h":32}
 		}
-	}
+	]
+}
