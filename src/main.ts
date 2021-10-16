@@ -1,4 +1,5 @@
 import * as Phaser from 'phaser';
+import DeanApt from './scenes/deanapt';
 import HUD from './scenes/hud';
 import { Intro } from './scenes/intro';
 import { Salter } from './scenes/salter';
@@ -9,7 +10,8 @@ var config = {
     width: 1000,
     height: 800,
     //scene: [Title, Intro, Salter, HUD],
-    scene: [Salter, HUD],
+    //scene: [Salter, HUD],
+    scene: [DeanApt],
     physics: {
     default: 'arcade',
     arcade: {
