@@ -1,3 +1,6 @@
+import DeanAptDialog from "./deanaptdialog";
+import DialogBox from "./dialogbox";
+
 export default class DeanApt extends Phaser.Scene {
     constructor(player) 
     {
@@ -15,6 +18,8 @@ export default class DeanApt extends Phaser.Scene {
     rabbitCage;
     spacebar;
     door;
+
+    SCENE_DIALOG = new DeanAptDialog();
 
     preload(){
         // Listen to space keys
@@ -35,8 +40,6 @@ export default class DeanApt extends Phaser.Scene {
     }
 
     create(){
-
-
       let image = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2-100, 'deanaptbg')
       let scaleX = this.cameras.main.width / image.width
       let scaleY = this.cameras.main.height / image.height
@@ -103,9 +106,8 @@ export default class DeanApt extends Phaser.Scene {
       }, null);
       this.physics.add.collider(this.player, this.pc, ()=>{
         if(this.spacebar.isDown){
-        let style = { font: "bold 32px Arial", fill: "white" };
-        console.log("you unsent a message about berzerk");
-        let titleText = this.add.text(-400, 800, "you unsent a message about berzerk", style);
+          this.scene.pause().launch('DialogBox', {dialog: this.SCENE_DIALOG.PC_DIALOG[Math.floor(Math.random() * 3)]})
+          this.scene.resume();
         }
       }, null);
       this.physics.add.collider(this.player, this.rabbitCage, ()=>{
