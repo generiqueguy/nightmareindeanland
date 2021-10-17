@@ -10,8 +10,7 @@ var config = {
     width: 1000,
     height: 800,
     //scene: [Title, Intro, Salter, HUD],
-    //scene: [Salter, HUD],
-    scene: [DeanApt],
+    scene: [DeanApt, Salter, HUD],
     physics: {
     default: 'arcade',
     arcade: {

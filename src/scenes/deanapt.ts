@@ -14,12 +14,13 @@ export default class DeanApt extends Phaser.Scene {
     tv;
     rabbitCage;
     spacebar;
+    door;
 
     preload(){
         // Listen to space keys
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         //bg
-        this.load.image('bg', '../../assets/scenes/deansapt/RHGdeansapt2.png');
+        this.load.image('deanaptbg', '../../assets/scenes/deansapt/RHGdeansapt2.png');
         
         //deansprite
         this.load.atlas('8bitdean', '../../assets/atlases/8bitdean.png', '../../assets/atlases/8bitdean.json');   
@@ -36,18 +37,19 @@ export default class DeanApt extends Phaser.Scene {
     create(){
 
 
-      let image = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2-100, 'bg')
+      let image = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2-100, 'deanaptbg')
       let scaleX = this.cameras.main.width / image.width
       let scaleY = this.cameras.main.height / image.height
       let scale = Math.max(scaleX, scaleY)
 
             //add objects
       this.pc = this.physics.add.staticImage(-170,450,'pc').setScale(2)//.refreshBody().setBodySize(200,50, true);
-      
+      this.tv = this.physics.add.staticImage(0,450,'tv').setScale(2.3);
+
       this.rabbitCage = this.physics.add.staticImage(600,450,'rabbitCage').setScale(2.3)
       this.sink = this.physics.add.staticImage(1150,540,'sink').setScale(2);
       this.fridge = this.physics.add.staticImage(950,500,'fridge').setScale(2);
-      this.tv = this.physics.add.staticImage(0,450,'tv').setScale(2.3)
+
 
       this.player = this.physics.add.sprite(600,500,'8bitdean', "deanfront1").setScale(4);
       this.cameras.main.startFollow(this.player);
@@ -75,6 +77,17 @@ export default class DeanApt extends Phaser.Scene {
       this.physics.world.setBounds(-200, 400, 2800, 300);
       this.player.setCollideWorldBounds(true);
       this.player.body.setAllowGravity(false);
+
+      this.door = this.physics.add.existing(new Phaser.GameObjects.Zone(this, 350, 390, 100, 200), true)
+
+      
+      this.physics.add.overlap(this.player, this.door, ()=>{
+        if(this.spacebar.isDown){
+          this.scene.stop('DeanApt');
+          this.scene.remove('DeanApt');
+          this.scene.start('Salter');
+        }
+      }, null)
 
       this.physics.add.collider(this.player, this.tv, ()=>{
         if(this.spacebar.isDown)
@@ -105,25 +118,25 @@ export default class DeanApt extends Phaser.Scene {
       //listen to cursor inputs
       if (this.cursors.up.isDown)
       {
-          this.player.setVelocityY(-100);
+          this.player.setVelocityY(-150);
           this.player.anims.play('walkUp', true);
       }
       else if (this.cursors.left.isDown)
       {
           this.player.flipX = true;
-          this.player.setVelocityX(-100); 
+          this.player.setVelocityX(-150); 
           this.player.anims.play('walkSide', true);        
       }
       else if (this.cursors.right.isDown)
       {
           this.player.flipX = false;
-          this.player.setVelocityX(100);
+          this.player.setVelocityX(150);
           this.player.anims.play('walkSide', true);
       
       }
       else if (this.cursors.down.isDown)
       {
-          this.player.setVelocityY(100);
+          this.player.setVelocityY(150);
           this.player.anims.play('walkDown', true);
       }
       else if (this.cursors.down.isUp && this.cursors.up.isUp 

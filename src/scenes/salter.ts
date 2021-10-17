@@ -11,7 +11,6 @@ export class Salter extends Phaser.Scene{
 
     preload ()
     {
-        this.load.image('bg', '../../assets/background.png');
 
         //dean idle anim
         this.load.image('dean', '../../assets/dean/deanidle.png');
@@ -69,6 +68,9 @@ export class Salter extends Phaser.Scene{
         this.load.image('thugcut2', '../../assets/enemies/thug/attack/thugcut2.png');
         this.load.image('thugcut3', '../../assets/enemies/thug/attack/thugcut3.png');
         this.load.image('thugcut4', '../../assets/enemies/thug/attack/thugcut4.png');
+
+        this.load.image('salterbg', '../../assets/background.png');
+
     }
 
     projectiles;
@@ -96,7 +98,8 @@ export class Salter extends Phaser.Scene{
     }
     create ()
     {        
-        this.add.image(4000, 300, 'bg')
+        
+        this.add.image(4000, 300, 'salterbg');
 
         // Listen to space keys
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
