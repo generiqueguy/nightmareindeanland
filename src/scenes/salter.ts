@@ -27,6 +27,10 @@ export class Salter extends Phaser.Scene{
         this.load.image('deanJump2', '../../assets/dean/deanjump2.png');
         this.load.image('deanJump3', '../../assets/dean/deanjump3.png');
 
+        //deandamage
+        this.load.atlas('deandamage', '../../assets/dean/deandamage.png', '../../assets/dean/deandamage.json');   
+       
+
         //dean crouch animation
         this.load.image('deanCrouch1', '../../assets/dean/deancrouch.png');
 
@@ -88,6 +92,7 @@ export class Salter extends Phaser.Scene{
     dumpster;
     duration = 0;
     lastDuration = 0;
+    isPlayerHit = false;
 
     fireProjectile(time) {
         if(time > this.lastFired){
@@ -143,7 +148,11 @@ export class Salter extends Phaser.Scene{
 
 
         
-
+        let deanKnockback = this.anims.generateFrameNames('deandamage', {
+            start: 1, end: 3,
+            prefix: 'deandamage'});
+            this.anims.create({ key: 'deanKnockback', frames: deanKnockback, frameRate: 10, repeat: 0 });
+    
 
         this.anims.create({
             key: 'deanRight',
@@ -257,7 +266,7 @@ export class Salter extends Phaser.Scene{
             repeat: -1
         });
 
-    //when the bottles hit the car
+    //when the bottles hit the enemy
     this.physics.add.collider(this.bottles, this.enemies,(enemy, bottle)=>{
         enemy.body.stop();
         let thug = enemy as Thug;
@@ -276,21 +285,30 @@ export class Salter extends Phaser.Scene{
     }, null);
     //when dean hits the thug
     this.physics.add.collider(this.player, this.enemies, (player, enemy)=>{
-        (enemy as Thug).anims.play('thugAttack');
-        //probably should put player.damage() here and thug.attack
-        this.player.immune = true;        
-        this.player.alpha = 0.5;
-        
-        if(this.player.flipX){
-            this.player.setVelocityX(100);
-        }
-        else{
-            this.player.setVelocityX(-100);
-        }
-        //this.player.anims.play('')
-        this.events.emit('playerHit', this.player)
-        //this.cameras.main.shake(32);
-        
+        if(this.isPlayerHit == false){
+            this.isPlayerHit = true;
+            (enemy as Thug).anims.play('thugAttack');
+            //probably should put player.damage() here and thug.attack
+            this.player.immune = true;        
+            this.player.alpha = 0.5;
+            //this.player.anims.play('')
+            this.events.emit('playerHit', this.player);
+            this.input.keyboard.enabled =  false;
+            
+            this.cameras.main.shake(32);
+            if(this.player.flipX){
+                this.player.setVelocityX(-100);
+            }
+            else{
+                this.player.setVelocityX(100);
+            }
+            setTimeout(()=>{
+                this.player.setVelocityX(0);
+                this.isPlayerHit = false;
+                this.input.keyboard.enabled =  true;
+                this.player.alpha = 1;
+            },500);
+        }   
     });
 
 
@@ -304,6 +322,8 @@ export class Salter extends Phaser.Scene{
     update (time, delta)
     {   
         this.duration += time;
+        if(this.isPlayerHit)
+            this.player.anims.play('deanKnockback', true);
         //listen to cursor inputs
         if (this.cursors.up.isDown && 
         (this.cursors.right.isDown || this.cursors.left.isDown)
