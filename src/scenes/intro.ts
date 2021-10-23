@@ -9,16 +9,27 @@ export class Intro extends Phaser.Scene{
 
     titleText;
     sceneCounter = 0;
+    cursors;
+    justPressed = false;
 
     create(){
         console.log("Intro Created");
         this.cameras.main.setBackgroundColor('white')
-        this.input.keyboard.on('keydown_ENTER', this.moveForward, this);
+        this.cursors = this.input.keyboard.createCursorKeys();
         const style = { font: "bold 32px Arial", fill: "white" };
         this.titleText = this.add.text(300, 300, 'One day on Salter Ave...', style);
+        
     }
 
     update(){
+        if(this.cursors.space.isDown && this.justPressed == false){
+            this.justPressed = true;
+            this.moveForward();
+            setTimeout(()=>{
+                this.justPressed = false;
+            },200)
+        }
+
     }
 
     moveForward(){
@@ -40,7 +51,7 @@ export class Intro extends Phaser.Scene{
                 break;
 
             case 4:
-                this.scene.start('Salter');
+                this.scene.start('DeanApt');
                 break;
         }
         this.sceneCounter++

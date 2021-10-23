@@ -93,6 +93,7 @@ export class Salter extends Phaser.Scene{
     duration = 0;
     lastDuration = 0;
     isPlayerHit = false;
+    playerHealth = 4;
 
     fireProjectile(time) {
         if(time > this.lastFired){
@@ -107,7 +108,7 @@ export class Salter extends Phaser.Scene{
         this.add.image(4000, 300, 'salterbg');
 
         // Listen to space keys
-        this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        //this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         //  Input Events
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -153,7 +154,11 @@ export class Salter extends Phaser.Scene{
             prefix: 'deandamage'});
             this.anims.create({ key: 'deanKnockback', frames: deanKnockback, frameRate: 10, repeat: 0 });
     
-
+        let deanDeath = this.anims.generateFrameNames('deandamage', {
+            start: 1, end: 6,
+            prefix: 'deandamage'});
+            this.anims.create({ key: 'deanDeath', frames: deanDeath, frameRate: 10, repeat: 0 });
+    
         this.anims.create({
             key: 'deanRight',
             frames: [
@@ -291,24 +296,33 @@ export class Salter extends Phaser.Scene{
             //probably should put player.damage() here and thug.attack
             this.player.immune = true;        
             this.player.alpha = 0.5;
-            //this.player.anims.play('')
-            this.events.emit('playerHit', this.player);
             this.input.keyboard.enabled =  false;
-            
+
             this.cameras.main.shake(32);
-            if(this.player.flipX){
-                this.player.setVelocityX(-100);
+            this.player.anims.play('deanKnockback', 0);
+
+            if(this.playerHealth >= 1){
+                this.events.emit('playerHit', this.player);
+                if(this.player.flipX == false){
+                    this.player.setVelocityX(-200);
+                }
+                else{
+                    this.player.setVelocityX(200);
+                }
             }
-            else{
-                this.player.setVelocityX(100);
+            else if(this.playerHealth <= 0){
+                this.player.anims.play('deanDeath',0);
+                console.log("You should have died now" + this.playerHealth);
             }
+            this.playerHealth--;
             setTimeout(()=>{
-                this.player.setVelocityX(0);
                 this.isPlayerHit = false;
                 this.input.keyboard.enabled =  true;
                 this.player.alpha = 1;
-            },500);
+                this.player.setVelocityX(0);
+            },1200);
         }   
+
     });
 
 
@@ -322,61 +336,62 @@ export class Salter extends Phaser.Scene{
     update (time, delta)
     {   
         this.duration += time;
-        if(this.isPlayerHit)
-            this.player.anims.play('deanKnockback', true);
+
+
+        if(!this.isPlayerHit){
         //listen to cursor inputs
-        if (this.cursors.up.isDown && 
-        (this.cursors.right.isDown || this.cursors.left.isDown)
-        && this.player.body.blocked.down
-        )
-        {
-            this.player.setVelocityY(-300);
-            this.player.anims.play('deanJump', true)
-            this.deanCrouching = false;
-        }
-        else if (this.spacebar.isDown){
-            this.fireProjectile(time);
-        }
-        else if (this.cursors.left.isDown
-            && this.player.body.blocked.down)
-        {
-            this.player.flipX = true;
-            this.player.setVelocityX(-160);
-            this.player.anims.play('deanRight', true);
-            this.deanCrouching = false;            
-        }
-        else if (this.cursors.right.isDown
-            && this.player.body.blocked.down)
-        {
-            this.player.flipX = false;
-            this.player.setVelocityX(160);
-            this.player.anims.play('deanRight', true);
-            this.deanCrouching = false;
-        
-        }
-        else if (this.cursors.up.isDown
-        && this.player.body.blocked.down
-        )
-        {
-            this.player.setVelocityY(-200);
-            this.player.anims.play('deanJump', true)
-            this.deanCrouching = false;
-        }
-        else if (this.cursors.down.isDown)
-        {
-            this.player.anims.play('deanCrouch', true);
-            this.player.setVelocityX(0);
-            this.deanCrouching = true;
-        }
-        else if (this.cursors.down.isUp && this.cursors.up.isUp 
-        && this.cursors.right.isUp && this.cursors.left.isUp)
+        if (this.cursors.down.isUp && this.cursors.up.isUp 
+            && this.cursors.right.isUp && this.cursors.left.isUp)
         {
             this.player.setVelocityX(0);
             this.player.anims.stop();
             this.player.anims.play('deanIdle', true)
         }
+
+            if (this.cursors.up.isDown  
+                && (this.cursors.right.isDown || this.cursors.left.isDown)
+                && this.player.body.blocked.down
+            )
+            {
+                this.player.setVelocityY(-300);
+                this.player.anims.play('deanJump', true)
+                this.deanCrouching = false;
+            }
+            else if (this.cursors.space.isDown){
+                this.fireProjectile(time);
+            }
+            else if (this.cursors.left.isDown
+                && this.player.body.blocked.down)
+            {
+                this.player.flipX = true;
+                this.player.setVelocityX(-160);
+                this.player.anims.play('deanRight', true);
+                this.deanCrouching = false;            
+            }
+            else if (this.cursors.right.isDown
+                && this.player.body.blocked.down)
+            {
+                this.player.flipX = false;
+                this.player.setVelocityX(160);
+                this.player.anims.play('deanRight', true);
+                this.deanCrouching = false;
+            
+            }
+            else if (this.cursors.up.isDown
+            && this.player.body.blocked.down
+            )
+            {
+                this.player.setVelocityY(-200);
+                this.player.anims.play('deanJump', true)
+                this.deanCrouching = false;
+            }
+            else if (this.cursors.down.isDown)
+            {
+                this.player.anims.play('deanCrouch', true);
+                this.player.setVelocityX(0);
+                this.deanCrouching = true;
+            }
+        }//else player is hit
     }
-
-
 }
 
