@@ -21,7 +21,7 @@ export default class HUD extends Phaser.Scene {
         this.add.image(75, 75, 'deanPortrait').setScale(0.2);
         for (var i=0; i <= 3; i++)
         {
-            this.smokes.create(175+30*i, 75, 'lifeCig').setScale(0.2);
+            this.smokes.create(175+30*i, 30, 'lifeCig').setScale(0.2);
         }
         this.smokes.children.each(entity => entity.flipX = true);
         console.log(this.smokes.children.entries[0]);

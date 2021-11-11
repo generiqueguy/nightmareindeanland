@@ -1,4 +1,6 @@
 import * as Phaser from 'phaser';
+import DeanApt from './scenes/deanapt';
+import DialogBox from './scenes/dialogbox';
 import HUD from './scenes/hud';
 import { Intro } from './scenes/intro';
 import { Salter } from './scenes/salter';
@@ -8,8 +10,9 @@ var config = {
     type: Phaser.AUTO,
     width: 1000,
     height: 800,
-    //scene: [Title, Intro, Salter],
-    scene: [Salter, HUD],
+    //scene: [Salter, HUD],
+    scene: [Title, Intro, DeanApt, DialogBox, Salter, HUD],
+    //scene: [DeanApt, DialogBox, Salter, HUD],
     physics: {
     default: 'arcade',
     arcade: {
