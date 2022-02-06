@@ -12,6 +12,11 @@ export class Salter extends Phaser.Scene{
     preload ()
     {
 
+        //deansprite
+        this.load.atlas('deanAtlas', '../../assets/atlases/dean.png', '../../assets/atlases/dean.json'); 
+
+        
+        
         //dean idle anim
         this.load.image('dean', '../../assets/dean/deanidle.png');
 
@@ -148,11 +153,8 @@ export class Salter extends Phaser.Scene{
         this.enemies.setCollideWorldBounds(true);
 
 
-        
-        let deanKnockback = this.anims.generateFrameNames('deandamage', {
-            start: 1, end: 3,
-            prefix: 'deandamage'});
-            this.anims.create({ key: 'deanKnockback', frames: deanKnockback, frameRate: 10, repeat: 0 });
+        let deanKnockback = this.anims.generateFrameNames('deandamage', {start: 1, end: 3, prefix: 'deandamage'});
+        this.anims.create({ key: 'deanKnockback', frames: deanKnockback, frameRate: 10, repeat: 0 });
     
         let deanDeath = this.anims.generateFrameNames('deandamage', {
             start: 1, end: 6,
@@ -293,7 +295,8 @@ export class Salter extends Phaser.Scene{
         if(this.isPlayerHit == false){
             this.isPlayerHit = true;
             (enemy as Thug).anims.play('thugAttack');
-            //probably should put player.damage() here and thug.attack
+            
+            //TODO: probably should put player.damage() here and thug.attack
             this.player.immune = true;        
             this.player.alpha = 0.5;
             this.input.keyboard.enabled =  false;
@@ -304,10 +307,10 @@ export class Salter extends Phaser.Scene{
             if(this.playerHealth >= 1){
                 this.events.emit('playerHit', this.player);
                 if(this.player.flipX == false){
-                    this.player.setVelocityX(-200);
+                    this.player.setVelocityX(-300);
                 }
                 else{
-                    this.player.setVelocityX(200);
+                    this.player.setVelocityX(300);
                 }
             }
             else if(this.playerHealth <= 0){
@@ -320,7 +323,7 @@ export class Salter extends Phaser.Scene{
                 this.input.keyboard.enabled =  true;
                 this.player.alpha = 1;
                 this.player.setVelocityX(0);
-            },1200);
+            },400);
         }   
 
     });

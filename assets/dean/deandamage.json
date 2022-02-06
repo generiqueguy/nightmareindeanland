@@ -6,8 +6,7 @@
 		    "rotated": false,
 		    "trimmed": false,
 		    "spriteSourceSize": {"x":0,"y":0,"w":92,"h":155},
-		    "sourceSize": {"w":92,"h":155},
-			"scale": 5
+		    "sourceSize": {"w":92,"h":155}
 		},
         {
 			"filename":"deandamage2",
@@ -15,8 +14,7 @@
 		    "rotated": false,
 		    "trimmed": false,
 		    "spriteSourceSize": {"x":0,"y":0,"w":91,"h":141},
-		    "sourceSize": {"w":91,"h":141},
-			"scale": 5
+		    "sourceSize": {"w":91,"h":141}
 		},
         {
 			"filename":"deandamage3",
@@ -24,8 +22,7 @@
 		    "rotated": false,
 		    "trimmed": false,
 		    "spriteSourceSize": {"x":0,"y":0,"w":112,"h":149},
-		    "sourceSize": {"w":112,"h":149},
-			"scale": 5
+		    "sourceSize": {"w":112,"h":149}
 		},
         {
 			"filename":"deandamage4",
@@ -33,8 +30,7 @@
 		    "rotated": false,
 		    "trimmed": false,
 		    "spriteSourceSize": {"x":0,"y":0,"w":160,"h":141},
-		    "sourceSize": {"w":160,"h":141},
-			"scale": 5
+		    "sourceSize": {"w":160,"h":141}
 		},
         {
 			"filename":"deandamage5",
@@ -42,8 +38,7 @@
 		    "rotated": false,
 		    "trimmed": false,
 		    "spriteSourceSize": {"x":0,"y":0,"w":129,"h":140},
-		    "sourceSize": {"w":129,"h":140},
-			"scale": 5
+		    "sourceSize": {"w":129,"h":140}
 		},
         {
 			"filename":"deandamage6",
@@ -51,8 +46,8 @@
 		    "rotated": false,
 		    "trimmed": false,
 		    "spriteSourceSize": {"x":0,"y":0,"w":129,"h":140},
-		    "sourceSize": {"w":129,"h":140},
-			"scale": 5
+		    "sourceSize": {"w":129,"h":140}
+			
 		}
-    ]
+    ], "scale": 10
 }
