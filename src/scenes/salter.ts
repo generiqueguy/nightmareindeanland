@@ -152,14 +152,26 @@ export class Salter extends Phaser.Scene{
         this.player.setCollideWorldBounds(true);
         this.enemies.setCollideWorldBounds(true);
 
+        //Dean KO
+        let deanKnockdown = this.anims.generateFrameNames('deanAtlas', {
+            start: 1, end: 7,
+            prefix: 'deanknockdown'});
+        this.anims.create({ key: 'deanKnockdown', frames: deanKnockdown, frameRate: 10, repeat: 0 });
 
-        let deanKnockback = this.anims.generateFrameNames('deandamage', {start: 1, end: 3, prefix: 'deandamage'});
-        this.anims.create({ key: 'deanKnockback', frames: deanKnockback, frameRate: 10, repeat: 0 });
-    
-        let deanDeath = this.anims.generateFrameNames('deandamage', {
-            start: 1, end: 6,
+        let deanDamage = this.anims.generateFrameNames('deanAtlas', {
+            start: 1, end: 2,
             prefix: 'deandamage'});
-            this.anims.create({ key: 'deanDeath', frames: deanDeath, frameRate: 10, repeat: 0 });
+        this.anims.create({ key: 'deanKnockback', frames: deanDamage, frameRate: 10, repeat: 0 });
+        
+    
+
+        // let deanKnockback = this.anims.generateFrameNames('deandamage', {start: 1, end: 3, prefix: 'deandamage'});
+        // this.anims.create({ key: 'deanKnockback', frames: deanKnockback, frameRate: 10, repeat: 0 });
+    
+        // let deanDeath = this.anims.generateFrameNames('deandamage', {
+        //     start: 1, end: 6,
+        //     prefix: 'deandamage'});
+        //     this.anims.create({ key: 'deanDeath', frames: deanDeath, frameRate: 10, repeat: 0 });
     
         this.anims.create({
             key: 'deanRight',
@@ -298,13 +310,14 @@ export class Salter extends Phaser.Scene{
             
             //TODO: probably should put player.damage() here and thug.attack
             this.player.immune = true;        
-            this.player.alpha = 0.5;
-            this.input.keyboard.enabled =  false;
+            
+            //this.input.keyboard.enabled =  false;
 
             this.cameras.main.shake(32);
             this.player.anims.play('deanKnockback', 0);
 
             if(this.playerHealth >= 1){
+                this.player.alpha = 0.5;
                 this.events.emit('playerHit', this.player);
                 if(this.player.flipX == false){
                     this.player.setVelocityX(-300);
@@ -314,16 +327,24 @@ export class Salter extends Phaser.Scene{
                 }
             }
             else if(this.playerHealth <= 0){
-                this.player.anims.play('deanDeath',0);
+                this.player.anims.play('deanKnockdown',0);
                 console.log("You should have died now" + this.playerHealth);
+                if(this.player.flipX == false){
+                    this.player.setVelocityX(-300);
+                }
+                else{
+                    this.player.setVelocityX(300);
+                }
             }
             this.playerHealth--;
             setTimeout(()=>{
-                this.isPlayerHit = false;
-                this.input.keyboard.enabled =  true;
-                this.player.alpha = 1;
+                if (this.playerHealth >= 0){
+                    this.isPlayerHit = false;
+                    this.input.keyboard.enabled =  true;
+                    this.player.alpha = 1;
+                }
                 this.player.setVelocityX(0);
-            },400);
+            },300);
         }   
 
     });
@@ -339,7 +360,7 @@ export class Salter extends Phaser.Scene{
     update (time, delta)
     {   
         this.duration += time;
-
+        
 
         if(!this.isPlayerHit){
         //listen to cursor inputs
@@ -394,7 +415,7 @@ export class Salter extends Phaser.Scene{
                 this.player.setVelocityX(0);
                 this.deanCrouching = true;
             }
-        }//else player is hit
+        }
     }
 }
 

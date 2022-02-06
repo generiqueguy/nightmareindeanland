@@ -16,8 +16,8 @@ var config = {
       },
     width: 1000,
     height: 800,
-    //scene: [Salter, HUD],
-    scene: [Title, Intro, DeanApt, DialogBox, Salter, HUD],
+    scene: [Salter, HUD],
+    //scene: [Title, Intro, DeanApt, DialogBox, Salter, HUD],
     //scene: [DeanApt, DialogBox, Salter, HUD],
     physics: {
     default: 'arcade',
