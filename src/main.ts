@@ -9,21 +9,21 @@ import { Title } from './scenes/title';
 var config = {
     type: Phaser.AUTO,
     scale: {
-        mode: Phaser.Scale.NONE,
-        //mode: Phaser.Scale.RESIZE,
+        //mode: Phaser.Scale.FIT,
+        mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH,
         parent: "game-container",
       },
     width: 1000,
     height: 800,
-    scene: [Salter, HUD],
+    //scene: [Salter, HUD],
     //scene: [Title, Intro, DeanApt, DialogBox, Salter, HUD],
-    //scene: [DeanApt, DialogBox, Salter, HUD],
+    scene: [DeanApt, DialogBox, Salter, HUD],
     physics: {
     default: 'arcade',
     arcade: {
         gravity: { y: 400 },
-        debug: true
+        debug: false
     }
 }
 };

@@ -78,10 +78,13 @@ export class Salter extends Phaser.Scene{
         this.load.image('thugcut3', '../../assets/enemies/thug/attack/thugcut3.png');
         this.load.image('thugcut4', '../../assets/enemies/thug/attack/thugcut4.png');
 
-        this.load.image('salterbg', '../../assets/background.png');
+        //murt
+        this.load.image('murt', '../../assets/enemies/murt.png');
+
+        this.load.image('salterbg', '../../assets/scenes/salter/salterbg.png');
 
     }
-
+    //x4370 - 4880
     projectiles;
     platforms;
     player;
@@ -95,10 +98,13 @@ export class Salter extends Phaser.Scene{
     enemies;
     objects;
     dumpster;
+    holeDumpster;
     duration = 0;
     lastDuration = 0;
     isPlayerHit = false;
     playerHealth = 4;
+    streetLevelY = 750;
+    murt;
 
     fireProjectile(time) {
         if(time > this.lastFired){
@@ -109,35 +115,38 @@ export class Salter extends Phaser.Scene{
     }
     create ()
     {        
-        
-        this.add.image(4000, 300, 'salterbg');
+        let image = this.add.image(5500, 400, 'salterbg');
+        console.log("background image loaded");
+        //let background = this.add.image(0, 500, 'salterbg');
 
         // Listen to space keys
         //this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         //  Input Events
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.player = this.physics.add.sprite(280,550,'dean');
+        this.player = this.physics.add.sprite(280,this.streetLevelY,'dean');
         this.player.setScale(0.7);
         this.player.setBodySize(200,300, true);
         this.player.setBounce(0.1);
 
-        this.cameras.main.setBounds(0, 0, 8000, 800);
+        this.cameras.main.setBounds(0, 0, 11000, 800);
         this.cameras.main.startFollow(this.player);
+        this.cameras.main.setBackgroundColor('#FFFFFF');
         
         this.bottles = new Bottles(this);
 
         
        
         this.platforms = this.physics.add.staticGroup();
-        this.carTop = this.physics.add.staticImage(1513,523,'cartop').setScale(0.5).refreshBody().setBodySize(200,50, true);
-        this.carBottom = this.physics.add.staticImage(1500,600,'carbottom').setScale(0.5).refreshBody().setSize(400, 100);
-        this.dumpster = this.physics.add.staticImage(3000, 550, 'dumpster').setScale(0.5).refreshBody();
+        this.carTop = this.physics.add.staticImage(1513,this.streetLevelY-75,'cartop').setScale(0.5).refreshBody().setBodySize(200,50, true);
+        this.carBottom = this.physics.add.staticImage(1500,this.streetLevelY,'carbottom').setScale(0.5).refreshBody().setSize(400, 100);
+        this.dumpster = this.physics.add.staticImage(3000, this.streetLevelY-100, 'dumpster').setScale(0.5).refreshBody();
+        this.holeDumpster = this.physics.add.staticImage(4613, this.streetLevelY, 'dumpster').setScale(0.5).refreshBody();
         
 
+        this.murt = this.physics.add.staticImage(10425, 110, 'murt').setScale(0.4);
 
-
-        this.enemies = this.physics.add.sprite(640, 550, 'thug');
+        this.enemies = this.physics.add.sprite(640, this.streetLevelY, 'thug');
         this.enemies.setScale(0.4);
         this.enemies.flipX = true;
         this.enemies.setImmovable();
@@ -147,7 +156,7 @@ export class Salter extends Phaser.Scene{
         // this.physics.add.collider(this.bottles, this.platforms);
         // this.physics.add.collider(this.bottles, this.enemies);
 
-        this.physics.world.setBounds(0, 0, 8000, 650);
+        this.physics.world.setBounds(0, 0, 11000, 750);
 
         this.player.setCollideWorldBounds(true);
         this.enemies.setCollideWorldBounds(true);
@@ -298,6 +307,7 @@ export class Salter extends Phaser.Scene{
 
     //when dean hits the car
     this.physics.add.collider(this.player, [this.carTop, this.carBottom]);
+    this.physics.add.collider(this.player, this.holeDumpster);
     //when the bottles hit the car
     this.physics.add.collider(this.bottles, [this.carTop, this.carBottom],(collidee, bottle)=>{
         (bottle as Bottle).reset(this.player);    
@@ -359,6 +369,7 @@ export class Salter extends Phaser.Scene{
 
     update (time, delta)
     {   
+        console.log("Player Position:" + " x:"+this.player.x + " y:"+this.player.y)
         this.duration += time;
         
 
