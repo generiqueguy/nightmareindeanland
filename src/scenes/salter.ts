@@ -79,7 +79,6 @@ export class Salter extends Phaser.Scene{
         this.load.image('thugcut4', '../../assets/enemies/thug/attack/thugcut4.png');
 
         //murt
-        this.load.image('murt', '../../assets/enemies/murt.png');
 
         this.load.image('salterbg', '../../assets/scenes/salter/salterbg.png');
 
@@ -143,13 +142,26 @@ export class Salter extends Phaser.Scene{
         this.dumpster = this.physics.add.staticImage(3000, this.streetLevelY-100, 'dumpster').setScale(0.5).refreshBody();
         this.holeDumpster = this.physics.add.staticImage(4613, this.streetLevelY, 'dumpster').setScale(0.5).refreshBody();
         
+        //murt goes on 10425, 110 for top of roof
 
-        this.murt = this.physics.add.staticImage(10425, 110, 'murt').setScale(0.4);
+        
+        this.enemies = this.physics.add.group({
+            key: 'thug',
+            repeat: 11,
+            setXY: { x: 640, y: this.streetLevelY, stepX: 300}
+        });
+        
+        this.enemies.children.iterate((child)=>{
+            child.setScale(0.4);
+            child.flipX = true;
+            child.setImmovable();
+            child.setCollideWorldBounds(true);
+        })
+        // this.physics.add.sprite(640, this.streetLevelY, 'thug')
+        //     .setScale(0.4)
+        // this.enemies.flipX =true;
+        // this.enemies.setImmovable();
 
-        this.enemies = this.physics.add.sprite(640, this.streetLevelY, 'thug');
-        this.enemies.setScale(0.4);
-        this.enemies.flipX = true;
-        this.enemies.setImmovable();
         
 
         // this.physics.add.collider(this.player, this.platforms);
@@ -159,7 +171,6 @@ export class Salter extends Phaser.Scene{
         this.physics.world.setBounds(0, 0, 11000, 750);
 
         this.player.setCollideWorldBounds(true);
-        this.enemies.setCollideWorldBounds(true);
 
         //Dean KO
         let deanKnockdown = this.anims.generateFrameNames('deanAtlas', {
@@ -247,8 +258,8 @@ export class Salter extends Phaser.Scene{
                 {key: 'thugwalk3'},
                 {key: 'thugwalk4'}
             ],
-            frameRate: 10,
-            repeat: 0
+            frameRate: 4,
+            repeat: -1
         });
         this.anims.create({
             key: 'thugDamage',
@@ -294,8 +305,12 @@ export class Salter extends Phaser.Scene{
             repeat: -1
         });
 
+        this.enemies.children.iterate((child)=>{
+            child.anims.play('thugWalk', true);
+            child.setVelocityX(-50);
+        })
     //when the bottles hit the enemy
-    this.physics.add.collider(this.bottles, this.enemies,(enemy, bottle)=>{
+    this.physics.add.collider(this.bottles, this.enemies,(bottle, enemy)=>{
         enemy.body.stop();
         let thug = enemy as Thug;
         thug.flipX = false;
@@ -309,7 +324,7 @@ export class Salter extends Phaser.Scene{
     this.physics.add.collider(this.player, [this.carTop, this.carBottom]);
     this.physics.add.collider(this.player, this.holeDumpster);
     //when the bottles hit the car
-    this.physics.add.collider(this.bottles, [this.carTop, this.carBottom],(collidee, bottle)=>{
+    this.physics.add.collider(this.bottles, [this.carTop, this.carBottom],(staticObject, bottle)=>{
         (bottle as Bottle).reset(this.player);    
     }, null);
     //when dean hits the thug
@@ -358,9 +373,7 @@ export class Salter extends Phaser.Scene{
         }   
 
     });
-
-
-    this.scene.launch('HUD');
+        this.scene.launch('HUD');
     }
                 
 
@@ -369,9 +382,19 @@ export class Salter extends Phaser.Scene{
 
     update (time, delta)
     {   
-        console.log("Player Position:" + " x:"+this.player.x + " y:"+this.player.y)
+        //console.log("Player Position:" + " x:"+this.player.x + " y:"+this.player.y)
         this.duration += time;
         
+        // console.log(time)
+        // if(time%2000 === 0){
+        //     this.enemies.children.iterate((thug)=>{
+        //         console.log('module 2000 thug')
+        //         thug.flipX = !thug.flipX;
+        //         if(thug.flipX) thug.setVelocityX(-100)
+        //         else thug.setVelocityX(100);
+        //         thug.anims.play('thugWalk')
+        //     })
+        // }
 
         if(!this.isPlayerHit){
         //listen to cursor inputs
