@@ -1,5 +1,5 @@
 import DeanAptDialog from "./deanaptdialog";
-import DialogBox from "./dialogbox";
+import DialogBox from "../dialogbox";
 
 export default class DeanApt extends Phaser.Scene {
     constructor(player) 

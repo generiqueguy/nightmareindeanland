@@ -1,9 +1,9 @@
 import * as Phaser from 'phaser';
-import DeanApt from './scenes/deanapt';
+import DeanApt from './scenes/deanapt/deanapt';
 import DialogBox from './scenes/dialogbox';
 import HUD from './scenes/hud';
 import { Intro } from './scenes/intro';
-import { Salter } from './scenes/salter';
+import { Salter } from './scenes/deanapt/salter/salter';
 import { Title } from './scenes/title';
 
 var config = {

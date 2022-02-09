@@ -1,0 +1,28 @@
+{
+	"frames":[
+		{
+			"filename": "murtstanding",
+		    "frame": {"x":47,"y":58,"w":320,"h":325},
+		    "rotated": false,
+		    "trimmed": true,
+		    "spriteSourceSize": {"x":0,"y":0,"w":147,"h":284},
+		    "sourceSize": {"w":147,"h":284}
+		},
+        {
+			"filename": "murtcrouch",
+		    "frame": {"x":70,"y":912,"w":305,"h":438},
+		    "rotated": false,
+		    "trimmed": true,
+		    "spriteSourceSize": {"x":0,"y":0,"w":305,"h":438},
+		    "sourceSize": {"w":305,"h":438}
+		},
+        {
+			"filename": "murtjump",
+		    "frame": {"x":436,"y":853,"w":305,"h":438},
+		    "rotated": false,
+		    "trimmed": true,
+		    "spriteSourceSize": {"x":0,"y":0,"w":305,"h":438},
+		    "sourceSize": {"w":305,"h":438}
+		}
+    ]
+}
