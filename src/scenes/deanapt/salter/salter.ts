@@ -133,7 +133,8 @@ export class Salter extends Phaser.Scene{
         //  Input Events
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.player = this.physics.add.sprite(280,this.streetLevelY,'dean');
+        //original 280
+        this.player = this.physics.add.sprite(9000,this.streetLevelY,'dean');
         this.player.setScale(0.7);
         this.player.setBodySize(200,300, true);
         this.player.setBounce(0.1);
@@ -151,13 +152,7 @@ export class Salter extends Phaser.Scene{
 
         
        
-        this.platforms = this.physics.add.staticGroup();
-        this.carTop = this.physics.add.staticImage(1513,this.streetLevelY-75,'cartop').setScale(0.5).refreshBody().setBodySize(200,50, true);
-        this.carBottom = this.physics.add.staticImage(1500,this.streetLevelY,'carbottom').setScale(0.5).refreshBody().setSize(400, 100);
-        this.dumpster = this.physics.add.staticImage(3000, this.streetLevelY-100, 'dumpster').setScale(0.5).refreshBody();
-        this.holeDumpster = this.physics.add.staticImage(4613, this.streetLevelY, 'dumpster').setScale(0.5).refreshBody();
-        
-        //murt goes on 10425, 110 for top of roof
+
 
         
         this.enemies = this.physics.add.group({
@@ -172,6 +167,12 @@ export class Salter extends Phaser.Scene{
             child.setCollideWorldBounds(true);
         })
 
+        this.platforms = this.physics.add.staticGroup();
+        this.carTop = this.physics.add.staticImage(1513,this.streetLevelY-75,'cartop').setScale(0.5).refreshBody().setBodySize(200,50, true);
+        this.carBottom = this.physics.add.staticImage(1500,this.streetLevelY,'carbottom').setScale(0.5).refreshBody().setSize(400, 100);
+        this.dumpster = this.physics.add.staticImage(3000, this.streetLevelY-100, 'dumpster').setScale(0.5).refreshBody();
+        this.holeDumpster = this.physics.add.staticImage(4613, this.streetLevelY, 'dumpster').setScale(0.5).refreshBody();
+        
         this.arialEnemies = this.physics.add.group({
             key:'shitflap2',
             repeat: 11,
@@ -216,6 +217,12 @@ export class Salter extends Phaser.Scene{
             start: 1, end: 6,
             prefix: 'shitflap'});
         this.anims.create({ key: 'shitflap', frames: shitflap, frameRate: 10, repeat: -1 });
+
+        //murtJump Animation
+        let murtJump = this.anims.generateFrameNames('murtAtlas', {
+            start: 1, end: 2,
+            prefix: 'murtjump'});
+        this.anims.create({ key: 'murtjump', frames: murtJump, frameRate: 4, repeat: 0 });
 
 
 
@@ -339,6 +346,9 @@ export class Salter extends Phaser.Scene{
             repeat: -1
         });
 
+        
+
+
         this.enemies.children.iterate((thug)=>{
             thug.anims.play('thugWalk', true);
             thug.setVelocityX(-50);
@@ -366,6 +376,12 @@ export class Salter extends Phaser.Scene{
         thug.anims.play('thugDamage');
         thug.body.destroy();
         }, null);
+
+        //when the bottles hit the murt
+        this.physics.add.collider(this.bottles, this.murt,(murt, bottle)=>{
+            (bottle as Bottle).reset(this.player);
+            this.murt.setFrame('murtdamage')
+            }, null);
 
     //when dean hits the car
     this.physics.add.collider(this.player, [this.carTop, this.carBottom]);
@@ -435,7 +451,7 @@ export class Salter extends Phaser.Scene{
             this.playMurtCutscene();
         }
         else{
-        console.log("Player Position:" + " x:"+this.player.x + " y:"+this.player.y)
+        //console.log("Player Position:" + " x:"+this.player.x + " y:"+this.player.y)
         this.duration += time;
         
         // console.log(time)
@@ -507,9 +523,25 @@ export class Salter extends Phaser.Scene{
     }
 
     playMurtCutscene(){
-        this.scene.pause().launch('DialogBox', {dialog: "Hey, do you want to fuck my wife??",
+        //this.scene.pause();
+        
+        this.murt.anims.play('murtjump');
+        
+        this.murt.on('animationcomplete', ()=>{
+            this.murt.setVelocityX(-200);
+        })
+        setTimeout(()=>{
+            setTimeout(()=>{
+                this.murt.setFrame('murtstanding')
+            },1700)
+            this.murt.setVelocityX(0)
+            this.murt.body.allowGravity = true;
+        }, 2000)
+        console.log("FART");
+        this.scene.launch('DialogBox', {dialog: "You there! Do you want to fuck my wife??",
             camera: this.cameras.main});
         this.murtScene = true;
+        //this.scene.resume;
     }
 }
 

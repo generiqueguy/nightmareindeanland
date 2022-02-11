@@ -9,7 +9,7 @@
 		    "sourceSize": {"w":147,"h":284}
 		},
         {
-			"filename": "murtcrouch",
+			"filename": "murtjump1",
 		    "frame": {"x":70,"y":912,"w":305,"h":438},
 		    "rotated": false,
 		    "trimmed": true,
@@ -17,12 +17,20 @@
 		    "sourceSize": {"w":305,"h":438}
 		},
         {
-			"filename": "murtjump",
+			"filename": "murtjump2",
 		    "frame": {"x":436,"y":853,"w":305,"h":438},
 		    "rotated": false,
 		    "trimmed": true,
 		    "spriteSourceSize": {"x":0,"y":0,"w":305,"h":438},
 		    "sourceSize": {"w":305,"h":438}
+		},
+		{
+			"filename": "murtdamage",
+		    "frame": {"x":1062,"y":1010,"w":369,"h":346},
+		    "rotated": false,
+		    "trimmed": true,
+		    "spriteSourceSize": {"x":0,"y":0,"w":369,"h":346},
+		    "sourceSize": {"w":369,"h":346}
 		}
     ]
 }
