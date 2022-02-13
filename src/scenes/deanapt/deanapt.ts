@@ -105,13 +105,13 @@ export default class DeanApt extends Phaser.Scene {
       this.physics.add.collider(this.player, this.fridge, ()=>{
         if(this.spacebar.isDown)
         this.scene.pause().launch('DialogBox', {dialog: this.SCENE_DIALOG.FRIDGE_DIALOG[0],
-          camera: this.cameras.main})
+          camera: this.cameras.main, speaker: 'dean'})
           this.scene.resume();;
       }, null);
       this.physics.add.collider(this.player, this.pc, ()=>{
         if(this.spacebar.isDown){
           this.scene.pause().launch('DialogBox', {dialog: this.SCENE_DIALOG.PC_DIALOG[Math.floor(Math.random() * 3)],
-          camera: this.cameras.main})
+          camera: this.cameras.main, speaker:'enemyBox'})
           this.scene.resume();
         }
       }, null);

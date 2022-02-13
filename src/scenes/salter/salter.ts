@@ -1,8 +1,8 @@
-import { Bottle, Bottles } from "../../../sprites/weapons/bottles";
+import { Bottle, Bottles } from "../../sprites/weapons/bottles";
 import * as Phaser from 'phaser';
-import { Thug } from "../../../sprites/enemies/thug";
-import HUD from "../../hud";
-import { Dean } from "../../../sprites/characters/dean";
+import { Thug } from "../../sprites/enemies/thug";
+import HUD from "../hud";
+import { Dean } from "../../sprites/characters/dean";
 
 export class Salter extends Phaser.Scene{
     constructor(){
@@ -47,6 +47,8 @@ export class Salter extends Phaser.Scene{
         //murt
         this.load.atlas('murtAtlas', '../../assets/murt/murt.png', '../../assets/atlases/murt.json');
  
+        //joss
+        this.load.atlas('jossAtlas', '../../assets/joss/JPSPRITES3.png', '../../assets/atlases/joss.json');
         
         
 
@@ -111,8 +113,9 @@ export class Salter extends Phaser.Scene{
     playerHealth = 4;
     streetLevelY = 750;
     murt;
+    joss;
 
-    //murtscene flag
+    //murt scene flagged?
     murtScene = false;
 
     fireProjectile(time) {
@@ -124,37 +127,32 @@ export class Salter extends Phaser.Scene{
     }
     create ()
     {        
+        //loadbg
         let image = this.add.image(5500, 400, 'salterbg');
-        console.log("background image loaded");
-        //let background = this.add.image(0, 500, 'salterbg');
-
-        // Listen to space keys
-        //this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         //  Input Events
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        //original 280
+        //spawn deano
         this.player = this.physics.add.sprite(9000,this.streetLevelY,'dean');
         this.player.setScale(0.7);
         this.player.setBodySize(200,300, true);
         this.player.setBounce(0.1);
 
-        //10425
+        //load deanweaps
+        this.bottles = new Bottles(this);
+
+
+        //spawn murt
         this.murt = this.physics.add.sprite(10425, 110, 'murtAtlas', 'murtstanding').setScale(0.56)
         this.murt.flipX = true;
         this.murt.body.allowGravity = false;
 
+        //create camera
         this.cameras.main.setBounds(0, 0, 11000, 800);
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBackgroundColor('#FFFFFF');
         
-        this.bottles = new Bottles(this);
-
-        
-       
-
-
-        
+        //spawn thugs
         this.enemies = this.physics.add.group({
             key: 'thug',
             repeat: 11,
@@ -163,7 +161,6 @@ export class Salter extends Phaser.Scene{
         this.enemies.children.iterate((child)=>{
             child.setScale(0.4);
             child.flipX = true;
-            child.setImmovable();
             child.setCollideWorldBounds(true);
         })
 
@@ -196,7 +193,7 @@ export class Salter extends Phaser.Scene{
         // this.physics.add.collider(this.bottles, this.platforms);
         // this.physics.add.collider(this.bottles, this.enemies);
 
-        this.physics.world.setBounds(0, 0, 11000, 750);
+        this.physics.world.setBounds(0,0, 11000, 750);
 
         this.player.setCollideWorldBounds(true);
         this.murt.setCollideWorldBounds(true);
@@ -224,6 +221,17 @@ export class Salter extends Phaser.Scene{
             prefix: 'murtjump'});
         this.anims.create({ key: 'murtjump', frames: murtJump, frameRate: 4, repeat: 0 });
 
+        //jossrun Animation
+        let jossRun = this.anims.generateFrameNames('jossAtlas', {
+            start: 1, end: 4,
+            prefix: 'jossrun'});
+        this.anims.create({ key: 'jossrun', frames: jossRun, frameRate: 10, repeat: -1 });
+        
+        //jossshoot Animation
+        let jossShoot = this.anims.generateFrameNames('jossAtlas', {
+            start: 1, end: 4,
+            prefix: 'jossshoot'});
+        this.anims.create({ key: 'jossshoot', frames: jossShoot, frameRate: 10, repeat: 0 });
 
 
         // let deanKnockback = this.anims.generateFrameNames('deandamage', {start: 1, end: 3, prefix: 'deandamage'});
@@ -377,11 +385,16 @@ export class Salter extends Phaser.Scene{
         thug.body.destroy();
         }, null);
 
-        //when the bottles hit the murt
-        this.physics.add.collider(this.bottles, this.murt,(murt, bottle)=>{
-            (bottle as Bottle).reset(this.player);
-            this.murt.setFrame('murtdamage')
-            }, null);
+    //when the bottles hit the murt
+    this.physics.add.collider(this.bottles, this.murt,(murt, bottle)=>{
+        (bottle as Bottle).reset(this.player);
+        this.murt.setFrame('murtdamage')
+        this.murt.immune = true;
+        setTimeout(()=>{
+            this.murt.setVelocityX(0);
+            this.murt.setFrame('')
+            },250)
+        }, null);
 
     //when dean hits the car
     this.physics.add.collider(this.player, [this.carTop, this.carBottom]);
@@ -523,8 +536,6 @@ export class Salter extends Phaser.Scene{
     }
 
     playMurtCutscene(){
-        //this.scene.pause();
-        
         this.murt.anims.play('murtjump');
         
         this.murt.on('animationcomplete', ()=>{
@@ -537,11 +548,28 @@ export class Salter extends Phaser.Scene{
             this.murt.setVelocityX(0)
             this.murt.body.allowGravity = true;
         }, 2000)
+        this.spawnJoss();
         console.log("FART");
-        this.scene.launch('DialogBox', {dialog: "You there! Do you want to fuck my wife??",
-            camera: this.cameras.main});
+        // this.scene.launch('DialogBox', {dialog: "You there! Do you want to fuck my wife??",
+        //     camera: this.cameras.main});
+        // console.log(this.cameras.main);
         this.murtScene = true;
-        //this.scene.resume;
+        
+    }
+
+    spawnJoss(){
+        this.joss = this.physics.add.sprite(9000, 0, 'jossAtlas','jossstanding').setScale(0.6);
+        this.joss.setVelocityX(300);
+        this.joss.setCollideWorldBounds(true);
+        this.joss.anims.play('jossrun', true);
+        setTimeout(()=>{
+            this.joss.setVelocityX(0);
+            this.joss.anims.stop();
+            this.joss.setFrame('jossstanding');
+            this.scene.launch('DialogBox', {dialog: "FUCK OFF MURT! PREPARE TO GET FUCKED..\nAND I DON'T MEAN BY CENTIS!",
+                camera: this.cameras.main, speaker: 'joss'});
+        
+        },2000)
     }
 }
 
