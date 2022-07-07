@@ -16,14 +16,15 @@ var config = {
       },
     width: 1000,
     height: 800,
-    //scene: [Salter, HUD],
+    backgroundColor: "#FFFFFF",
+    scene: [Salter, HUD, DialogBox],
     //scene: [Title, Intro, DeanApt, DialogBox, Salter, HUD],
-    scene: [DeanApt, DialogBox, Salter, HUD],
+    //scene: [DeanApt, Salter, HUD, DialogBox],
     physics: {
     default: 'arcade',
     arcade: {
-        gravity: { y: 400 },
-        debug: false
+        gravity: { y: 800 },
+        debug: true
     }
 }
 };

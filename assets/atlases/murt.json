@@ -2,35 +2,99 @@
 	"frames":[
 		{
 			"filename": "murtstanding",
-		    "frame": {"x":47,"y":58,"w":320,"h":325},
+		    "frame": {"x":0,"y":0,"w":400,"h":420},
 		    "rotated": false,
 		    "trimmed": true,
-		    "spriteSourceSize": {"x":0,"y":0,"w":147,"h":284},
-		    "sourceSize": {"w":147,"h":284}
+		    "spriteSourceSize": {"x":0,"y":0,"w":400,"h":420},
+		    "sourceSize": {"w":400,"h":420}
+		},
+		{
+			"filename": "murtwalk1",
+		    "frame": {"x":400,"y":0,"w":400,"h":420},
+		    "rotated": false,
+		    "trimmed": true,
+		    "spriteSourceSize": {"x":0,"y":0,"w":400,"h":420},
+		    "sourceSize": {"w":400,"h":420}
+		},
+		{
+			"filename": "murtwalk2",
+		    "frame": {"x":800,"y":0,"w":400,"h":420},
+		    "rotated": false,
+		    "trimmed": true,
+		    "spriteSourceSize": {"x":0,"y":0,"w":400,"h":420},
+		    "sourceSize": {"w":400,"h":420}
+		},
+		{
+			"filename": "murtwalk3",
+		    "frame": {"x":1200,"y":0,"w":400,"h":420},
+		    "rotated": false,
+		    "trimmed": true,
+		    "spriteSourceSize": {"x":0,"y":0,"w":400,"h":420},
+		    "sourceSize": {"w":400,"h":420}
+		},
+		{
+			"filename": "murtwalk4",
+		    "frame": {"x":1600,"y":0,"w":400,"h":420},
+		    "rotated": false,
+		    "trimmed": true,
+		    "spriteSourceSize": {"x":0,"y":0,"w":400,"h":420},
+		    "sourceSize": {"w":400,"h":420}
+		},
+		{
+			"filename": "murtattack1",
+		    "frame": {"x":0,"y":420,"w":400,"h":420},
+		    "rotated": false,
+		    "trimmed": true,
+		    "spriteSourceSize": {"x":0,"y":0,"w":400,"h":420},
+		    "sourceSize": {"w":400,"h":420}
+		},
+		{
+			"filename": "murtattack2",
+		    "frame": {"x":400,"y":420,"w":400,"h":420},
+		    "rotated": false,
+		    "trimmed": true,
+		    "spriteSourceSize": {"x":0,"y":0,"w":400,"h":420},
+		    "sourceSize": {"w":400,"h":420}
+		},
+		{
+			"filename": "murtattack3",
+		    "frame": {"x":800,"y":420,"w":400,"h":420},
+		    "rotated": false,
+		    "trimmed": true,
+		    "spriteSourceSize": {"x":0,"y":0,"w":400,"h":420},
+		    "sourceSize": {"w":400,"h":420}
+		},
+		{
+			"filename": "murtattack4",
+		    "frame": {"x":1200,"y":420,"w":400,"h":420},
+		    "rotated": false,
+		    "trimmed": true,
+		    "spriteSourceSize": {"x":0,"y":0,"w":400,"h":420},
+		    "sourceSize": {"w":400,"h":420}
 		},
         {
 			"filename": "murtjump1",
-		    "frame": {"x":70,"y":912,"w":305,"h":438},
+		    "frame": {"x":0,"y":840,"w":400,"h":420},
 		    "rotated": false,
 		    "trimmed": true,
-		    "spriteSourceSize": {"x":0,"y":0,"w":305,"h":438},
-		    "sourceSize": {"w":305,"h":438}
+		    "spriteSourceSize": {"x":0,"y":0,"w":400,"h":420},
+		    "sourceSize": {"w":400,"h":420}
 		},
         {
 			"filename": "murtjump2",
-		    "frame": {"x":436,"y":853,"w":305,"h":438},
+		    "frame": {"x":400,"y":840,"w":400,"h":420},
 		    "rotated": false,
 		    "trimmed": true,
-		    "spriteSourceSize": {"x":0,"y":0,"w":305,"h":438},
-		    "sourceSize": {"w":305,"h":438}
+		    "spriteSourceSize": {"x":0,"y":0,"w":400,"h":420},
+		    "sourceSize": {"w":400,"h":420}
 		},
 		{
 			"filename": "murtdamage",
-		    "frame": {"x":1062,"y":1010,"w":369,"h":346},
+		    "frame": {"x":800,"y":840,"w":400,"h":420},
 		    "rotated": false,
 		    "trimmed": true,
-		    "spriteSourceSize": {"x":0,"y":0,"w":369,"h":346},
-		    "sourceSize": {"w":369,"h":346}
+		    "spriteSourceSize": {"x":0,"y":0,"w":400,"h":420},
+		    "sourceSize": {"w":400,"h":420}
 		}
     ]
 }
