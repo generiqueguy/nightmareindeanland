@@ -1,8 +1,8 @@
-import { Bottle, Bottles } from "../sprites/weapons/bottles";
+import { Bottle, Bottles } from "../../sprites/weapons/bottles";
 import * as Phaser from 'phaser';
-import { Thug } from "../sprites/enemies/thug";
-import HUD from "./hud";
-import { Dean } from "../sprites/characters/dean";
+import { Thug } from "../../sprites/enemies/thug";
+import HUD from "../hud";
+import { Dean } from "../../sprites/characters/dean";
 
 export class Salter extends Phaser.Scene{
     constructor(){
@@ -12,6 +12,8 @@ export class Salter extends Phaser.Scene{
     preload ()
     {
 
+        //deansprite
+        this.load.atlas('deanAtlas', '../../assets/atlases/dean.png', '../../assets/atlases/dean.json');
         //dean idle anim
         this.load.image('dean', '../../assets/dean/deanidle.png');
 
@@ -37,7 +39,18 @@ export class Salter extends Phaser.Scene{
         //dean throw animations
         this.load.image('deanThrow1', '../../assets/dean/deanthrow1.png');
         this.load.image('deanThrow2', '../../assets/dean/deanthrow2.png');
-        this.load.image('deanThrow3', '../../assets/dean/deanthrow3.png');
+        this.load.image('deanThrow3', '../../assets/dean/deanthrow3.png'); 
+
+        //shithawk
+        this.load.atlas('shithawkAtlas', '../../assets/enemies/shithawk/shithawk.png', '../../assets/atlases/shithawk.json');
+        
+        //murt
+        this.load.atlas('murtAtlas', '../../assets/murt/murt.png', '../../assets/atlases/murt.json');
+ 
+        //joss
+        this.load.atlas('jossAtlas', '../../assets/joss/JPSPRITES3.png', '../../assets/atlases/joss.json');
+        
+        
 
         //car
         this.load.image('car', '../../assets/objects/CAR.png');
@@ -73,10 +86,12 @@ export class Salter extends Phaser.Scene{
         this.load.image('thugcut3', '../../assets/enemies/thug/attack/thugcut3.png');
         this.load.image('thugcut4', '../../assets/enemies/thug/attack/thugcut4.png');
 
-        this.load.image('salterbg', '../../assets/background.png');
+        //murt
+
+        this.load.image('salterbg', '../../assets/scenes/salter/salterbg.png');
 
     }
-
+    //x4370 - 4880
     projectiles;
     platforms;
     player;
@@ -88,12 +103,20 @@ export class Salter extends Phaser.Scene{
     carBottom;
     lastFired = 0;
     enemies;
+    arialEnemies;
     objects;
     dumpster;
+    holeDumpster;
     duration = 0;
     lastDuration = 0;
     isPlayerHit = false;
     playerHealth = 4;
+    streetLevelY = 750;
+    murt;
+    joss;
+
+    //murt scene flagged?
+    murtScene = false;
 
     fireProjectile(time) {
         if(time > this.lastFired){
@@ -104,60 +127,132 @@ export class Salter extends Phaser.Scene{
     }
     create ()
     {        
-        
-        this.add.image(4000, 300, 'salterbg');
+        let songLoader = this.load.audio('song', ['../../assets/scenes/salter/RockOverMoncton.m4a'])
+        songLoader.on('filecomplete', () => this.sound.add('song').play())
+        songLoader.start()
 
-        // Listen to space keys
-        //this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        //loadbg
+        let image = this.add.image(5500, 400, 'salterbg');
         //  Input Events
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.player = this.physics.add.sprite(280,550,'dean');
+        //spawn deano
+        this.player = this.physics.add.sprite(400,this.streetLevelY,'dean');
         this.player.setScale(0.7);
         this.player.setBodySize(200,300, true);
         this.player.setBounce(0.1);
 
-        this.cameras.main.setBounds(0, 0, 8000, 800);
-        this.cameras.main.startFollow(this.player);
-        
+        //load deanweaps
         this.bottles = new Bottles(this);
 
+
+        //spawn murt
+        this.murt = this.physics.add.sprite(10425, 110, 'murtAtlas', 'murtstanding').setScale(0.56)
+        this.murt.flipX = true;
+        this.murt.body.allowGravity = false;
+
+        //create camera
+        this.cameras.main.setBounds(0, 0, 11000, 800);
+        this.cameras.main.startFollow(this.player);
+        this.cameras.main.setBackgroundColor('#FFFFFF');
         
-       
+        //spawn thugs
+        this.enemies = this.physics.add.group({
+            key: 'thug',
+            repeat: 11,
+            setXY: { x: 640, y: this.streetLevelY, stepX: 300}
+        });
+        this.enemies.children.iterate((child)=>{
+            child.setScale(0.4);
+            child.flipX = true;
+            child.setCollideWorldBounds(true);
+        })
+
         this.platforms = this.physics.add.staticGroup();
-        this.carTop = this.physics.add.staticImage(1513,523,'cartop').setScale(0.5).refreshBody().setBodySize(200,50, true);
-        this.carBottom = this.physics.add.staticImage(1500,600,'carbottom').setScale(0.5).refreshBody().setSize(400, 100);
-        this.dumpster = this.physics.add.staticImage(3000, 550, 'dumpster').setScale(0.5).refreshBody();
+        this.carTop = this.physics.add.staticImage(1513,this.streetLevelY-75,'cartop').setScale(0.5).refreshBody().setBodySize(200,50, true);
+        this.carBottom = this.physics.add.staticImage(1500,this.streetLevelY,'carbottom').setScale(0.5).refreshBody().setSize(400, 100);
+        this.dumpster = this.physics.add.staticImage(3000, this.streetLevelY-100, 'dumpster').setScale(0.5).refreshBody();
+        this.holeDumpster = this.physics.add.staticImage(4613, this.streetLevelY, 'dumpster').setScale(0.5).refreshBody();
+        
+        this.arialEnemies = this.physics.add.group({
+            key:'shitflap2',
+            repeat: 11,
+            setXY:{ x: 640, y: Phaser.Math.Between(300, 600), stepX: 700}
+        });
+        this.arialEnemies.children.iterate((child)=>{
+            child.setScale(0.4);
+            child.y = Phaser.Math.Between(300, 600);
+            child.body.allowGravity = false;
+            child.setCollideWorldBounds(true)
+            child.body.onWorldBounds = true;
+            child.body.world.on('worldbounds', function(body) {
+                if (body.gameObject === this)
+                this.flipX = !this.flipX;
+                if(this.flipX) this.setVelocityX(150);
+                else this.setVelocityX(-150)
+              }, child);
+        })
         
 
+        // this.physics.add.sprite(640, this.streetLevelY, 'thug')
+        //     .setScale(0.4)
+        // this.enemies.flipX =true;
+        // this.enemies.setImmovable();
 
-
-        this.enemies = this.physics.add.sprite(640, 550, 'thug');
-        this.enemies.setScale(0.4);
-        this.enemies.flipX = true;
-        this.enemies.setImmovable();
         
 
         // this.physics.add.collider(this.player, this.platforms);
         // this.physics.add.collider(this.bottles, this.platforms);
         // this.physics.add.collider(this.bottles, this.enemies);
 
-        this.physics.world.setBounds(0, 0, 8000, 650);
+        this.physics.world.setBounds(0,0, 11000, 750);
 
         this.player.setCollideWorldBounds(true);
-        this.enemies.setCollideWorldBounds(true);
+        this.murt.setCollideWorldBounds(true);
 
+        //Dean KO
+        let deanKnockdown = this.anims.generateFrameNames('deanAtlas', {
+            start: 1, end: 7,
+            prefix: 'deanknockdown'});
+        this.anims.create({ key: 'deanKnockdown', frames: deanKnockdown, frameRate: 10, repeat: 0 });
 
-        
-        let deanKnockback = this.anims.generateFrameNames('deandamage', {
-            start: 1, end: 3,
+        let deanDamage = this.anims.generateFrameNames('deanAtlas', {
+            start: 1, end: 2,
             prefix: 'deandamage'});
-            this.anims.create({ key: 'deanKnockback', frames: deanKnockback, frameRate: 10, repeat: 0 });
-    
-        let deanDeath = this.anims.generateFrameNames('deandamage', {
+        this.anims.create({ key: 'deanKnockback', frames: deanDamage, frameRate: 10, repeat: 0 });
+
+        //Shitflap Animation
+        let shitflap = this.anims.generateFrameNames('shithawkAtlas', {
             start: 1, end: 6,
-            prefix: 'deandamage'});
-            this.anims.create({ key: 'deanDeath', frames: deanDeath, frameRate: 10, repeat: 0 });
+            prefix: 'shitflap'});
+        this.anims.create({ key: 'shitflap', frames: shitflap, frameRate: 10, repeat: -1 });
+
+        //murtJump Animation
+        let murtJump = this.anims.generateFrameNames('murtAtlas', {
+            start: 1, end: 2,
+            prefix: 'murtjump'});
+        this.anims.create({ key: 'murtjump', frames: murtJump, frameRate: 4, repeat: 0 });
+
+        //jossrun Animation
+        let jossRun = this.anims.generateFrameNames('jossAtlas', {
+            start: 1, end: 4,
+            prefix: 'jossrun'});
+        this.anims.create({ key: 'jossrun', frames: jossRun, frameRate: 10, repeat: -1 });
+        
+        //jossshoot Animation
+        let jossShoot = this.anims.generateFrameNames('jossAtlas', {
+            start: 1, end: 4,
+            prefix: 'jossshoot'});
+        this.anims.create({ key: 'jossshoot', frames: jossShoot, frameRate: 10, repeat: 0 });
+
+
+        // let deanKnockback = this.anims.generateFrameNames('deandamage', {start: 1, end: 3, prefix: 'deandamage'});
+        // this.anims.create({ key: 'deanKnockback', frames: deanKnockback, frameRate: 10, repeat: 0 });
+    
+        // let deanDeath = this.anims.generateFrameNames('deandamage', {
+        //     start: 1, end: 6,
+        //     prefix: 'deandamage'});
+        //     this.anims.create({ key: 'deanDeath', frames: deanDeath, frameRate: 10, repeat: 0 });
     
         this.anims.create({
             key: 'deanRight',
@@ -224,8 +319,8 @@ export class Salter extends Phaser.Scene{
                 {key: 'thugwalk3'},
                 {key: 'thugwalk4'}
             ],
-            frameRate: 10,
-            repeat: 0
+            frameRate: 4,
+            repeat: -1
         });
         this.anims.create({
             key: 'thugDamage',
@@ -271,8 +366,28 @@ export class Salter extends Phaser.Scene{
             repeat: -1
         });
 
+        
+
+
+        this.enemies.children.iterate((thug)=>{
+            thug.anims.play('thugWalk', true);
+            thug.setVelocityX(-50);
+
+            //to run into stuff
+            this.physics.add.collider(thug, [this.carTop, this.carBottom],(thug, object)=>{
+                (thug as Thug).flipX = !((thug as Thug).flipX);
+                (thug as Thug).setVelocityX(-((thug as Thug).body.velocity['x']))
+            }, null);
+        })
+
+        this.arialEnemies.children.iterate((child)=>{
+            child.anims.play('shitflap', true);
+            child.setVelocityX(-150);
+        })
+
+
     //when the bottles hit the enemy
-    this.physics.add.collider(this.bottles, this.enemies,(enemy, bottle)=>{
+    this.physics.add.collider(this.bottles, this.enemies,(bottle, enemy)=>{
         enemy.body.stop();
         let thug = enemy as Thug;
         thug.flipX = false;
@@ -282,51 +397,73 @@ export class Salter extends Phaser.Scene{
         thug.body.destroy();
         }, null);
 
+    //when the bottles hit the murt
+    this.physics.add.collider(this.bottles, this.murt,(murt, bottle)=>{
+        (bottle as Bottle).reset(this.player);
+        this.murt.setFrame('murtdamage')
+        this.murt.immune = true;
+        setTimeout(()=>{
+            this.murt.setVelocityX(0);
+            this.murt.setFrame('')
+            },250)
+        }, null);
+
     //when dean hits the car
     this.physics.add.collider(this.player, [this.carTop, this.carBottom]);
+    this.physics.add.collider(this.player, this.holeDumpster);
     //when the bottles hit the car
-    this.physics.add.collider(this.bottles, [this.carTop, this.carBottom],(collidee, bottle)=>{
+    this.physics.add.collider(this.bottles, [this.carTop, this.carBottom],(staticObject, bottle)=>{
         (bottle as Bottle).reset(this.player);    
     }, null);
+    //when the thug hits the car
+ 
     //when dean hits the thug
     this.physics.add.collider(this.player, this.enemies, (player, enemy)=>{
         if(this.isPlayerHit == false){
             this.isPlayerHit = true;
             (enemy as Thug).anims.play('thugAttack');
-            //probably should put player.damage() here and thug.attack
+            
+            //TODO: probably should put player.damage() here and thug.attack
             this.player.immune = true;        
-            this.player.alpha = 0.5;
-            this.input.keyboard.enabled =  false;
+            
+            //this.input.keyboard.enabled =  false;
 
             this.cameras.main.shake(32);
             this.player.anims.play('deanKnockback', 0);
 
             if(this.playerHealth >= 1){
+                this.player.alpha = 0.5;
                 this.events.emit('playerHit', this.player);
                 if(this.player.flipX == false){
-                    this.player.setVelocityX(-200);
+                    this.player.setVelocityX(-300);
                 }
                 else{
-                    this.player.setVelocityX(200);
+                    this.player.setVelocityX(300);
                 }
             }
             else if(this.playerHealth <= 0){
-                this.player.anims.play('deanDeath',0);
+                this.player.anims.play('deanKnockdown',0);
                 console.log("You should have died now" + this.playerHealth);
+                if(this.player.flipX == false){
+                    this.player.setVelocityX(-300);
+                }
+                else{
+                    this.player.setVelocityX(300);
+                }
             }
             this.playerHealth--;
             setTimeout(()=>{
-                this.isPlayerHit = false;
-                this.input.keyboard.enabled =  true;
-                this.player.alpha = 1;
+                if (this.playerHealth >= 0){
+                    this.isPlayerHit = false;
+                    this.input.keyboard.enabled =  true;
+                    this.player.alpha = 1;
+                }
                 this.player.setVelocityX(0);
-            },1200);
+            },300);
         }   
 
     });
-
-
-    this.scene.launch('HUD');
+        this.scene.launch('HUD');
     }
                 
 
@@ -335,8 +472,25 @@ export class Salter extends Phaser.Scene{
 
     update (time, delta)
     {   
+        this.arialEnemies.children.iterate((child)=>{
+            if (child.x <= 400) child.flipX;
+        })
+        if(this.player.x >= 9750 && this.murtScene == false){
+            this.playMurtCutscene();
+        }
+        else{
+        //console.log("Player Position:" + " x:"+this.player.x + " y:"+this.player.y)
         this.duration += time;
-
+        
+        // if(delta%2000 < 16.5){
+        //     this.enemies.children.iterate((thug)=>{
+        //         console.log('module 2000 thug')
+        //         thug.flipX = !thug.flipX;
+        //         if(thug.flipX) thug.setVelocityX(-100)
+        //         else thug.setVelocityX(100);
+        //         thug.anims.play('thugWalk')
+        //     })
+        // }
 
         if(!this.isPlayerHit){
         //listen to cursor inputs
@@ -353,7 +507,7 @@ export class Salter extends Phaser.Scene{
                 && this.player.body.blocked.down
             )
             {
-                this.player.setVelocityY(-300);
+                this.player.setVelocityY(-400);
                 this.player.anims.play('deanJump', true)
                 this.deanCrouching = false;
             }
@@ -381,7 +535,7 @@ export class Salter extends Phaser.Scene{
             && this.player.body.blocked.down
             )
             {
-                this.player.setVelocityY(-200);
+                this.player.setVelocityY(-400);
                 this.player.anims.play('deanJump', true)
                 this.deanCrouching = false;
             }
@@ -391,7 +545,43 @@ export class Salter extends Phaser.Scene{
                 this.player.setVelocityX(0);
                 this.deanCrouching = true;
             }
-        }//else player is hit
+        }
+    }
+    }
+
+    playMurtCutscene(){
+        this.murt.anims.play('murtjump');
+        
+        this.murt.on('animationcomplete', ()=>{
+            this.murt.setVelocityX(-200);
+        })
+        setTimeout(()=>{
+            setTimeout(()=>{
+                this.murt.setFrame('murtstanding')
+            },1700)
+            this.murt.setVelocityX(0)
+            this.murt.body.allowGravity = true;
+        }, 2000)
+        this.spawnJoss();
+        // console.log(this.cameras.main);
+        this.murtScene = true;
+    }
+
+    spawnJoss(){
+        this.joss = this.physics.add.sprite(8000, 0, 'jossAtlas','jossstanding').setScale(0.65);
+        this.joss.setVelocityX(300);
+        this.joss.setCollideWorldBounds(true);
+        this.joss.anims.play('jossrun', true);
+        setTimeout(()=>{
+            this.joss.setVelocityX(0);
+            this.joss.anims.stop();
+            this.joss.setFrame('jossstanding');
+            this.player.setFrame('deanknockdown7');
+            this.scene.launch('DialogBox', {dialog: "FUCK OFF MURT! PREPARE TO GET FUCKED..\nAND I DON'T MEAN BY CENTIS!",
+            camera: this.cameras.main, speaker: 'joss'});
+            
+        
+        },5000)
     }
 }
 
