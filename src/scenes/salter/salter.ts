@@ -127,8 +127,8 @@ export class Salter extends Phaser.Scene{
     }
     create ()
     {        
-        let songLoader = this.load.audio('song', ['../../assets/scenes/salter/RockOverMoncton.m4a'])
-        songLoader.on('filecomplete', () => this.sound.add('song').play())
+        let songLoader = this.load.audio('rockOver', ['../../assets/scenes/salter/RockOverMoncton.m4a'])
+        songLoader.on('filecomplete', () => this.sound.add('rockOver').play({loop: true, volume: 0.07}))
         songLoader.start()
 
         //loadbg

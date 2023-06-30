@@ -41,7 +41,7 @@ export default class DeanApt extends Phaser.Scene {
 
     create(){
       let songLoader = this.load.audio('song', ['../../assets/scenes/deansapt/42salter.m4a'])
-      songLoader.on('filecomplete', () => this.sound.add('song').play())
+      songLoader.on('filecomplete', () => this.sound.add('song').play({loop: true, volume: 0.1}))
       songLoader.start();
 
       let image = this.add.image(500,500, 'deanaptbg')
@@ -56,6 +56,7 @@ export default class DeanApt extends Phaser.Scene {
       this.rabbitCage = this.physics.add.staticImage(600,650,'rabbitCage').setScale(2.3)
       this.sink = this.physics.add.staticImage(1150,740,'sink').setScale(2);
       this.fridge = this.physics.add.staticImage(950,700,'fridge').setScale(2);
+      this.sink.body.setSize(300, 100, true);
 
 
       this.player = this.physics.add.sprite(600,700,'8bitdean', "deanfront1").setScale(4);
@@ -92,7 +93,7 @@ export default class DeanApt extends Phaser.Scene {
       
       this.physics.add.overlap(this.player, this.door, ()=>{
         if(this.spacebar.isDown){
-          songLoader.shutdown();
+          this.sound.stopByKey('song');
           this.scene.stop('DeanApt');
           this.scene.remove('DeanApt');
           this.scene.start('Salter');

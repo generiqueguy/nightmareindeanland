@@ -47,6 +47,7 @@ export default class DialogBox extends Phaser.Scene{
 
         default:
           this.dialogBoxType = 'boysBox';
+          this.speaker = null;
           break;
       }
     }
