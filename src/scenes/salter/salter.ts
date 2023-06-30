@@ -115,8 +115,8 @@ export class Salter extends Phaser.Scene{
     murt;
     joss;
 
-    //murt scene flagged?
-    murtScene = false;
+    //murt scene started
+    murtSceneStarted = false;
 
     fireProjectile(time) {
         if(time > this.lastFired){
@@ -181,6 +181,7 @@ export class Salter extends Phaser.Scene{
         });
         this.arialEnemies.children.iterate((child)=>{
             child.setScale(0.4);
+            child.setBodySize(200, 200).setOffset(20,70);
             child.y = Phaser.Math.Between(300, 600);
             child.body.allowGravity = false;
             child.setCollideWorldBounds(true)
@@ -366,8 +367,7 @@ export class Salter extends Phaser.Scene{
             repeat: -1
         });
 
-        
-
+    
 
         this.enemies.children.iterate((thug)=>{
             thug.anims.play('thugWalk', true);
@@ -386,7 +386,7 @@ export class Salter extends Phaser.Scene{
         })
 
 
-    //when the bottles hit the enemy
+    //when the bottles hit the punk enemy
     this.physics.add.collider(this.bottles, this.enemies,(bottle, enemy)=>{
         enemy.body.stop();
         let thug = enemy as Thug;
@@ -395,6 +395,13 @@ export class Salter extends Phaser.Scene{
         (bottle as Bottle).reset(this.player);
         thug.anims.play('thugDamage');
         thug.body.destroy();
+        }, null);
+
+    //when the bottles hit the aerial enemy
+    this.physics.add.collider(this.bottles, this.arialEnemies,(bottle, enemy)=>{
+        (bottle as Bottle).reset(this.player);
+        this.arialEnemies.remove(enemy);
+        enemy.destroy();
         }, null);
 
     //when the bottles hit the murt
@@ -415,9 +422,62 @@ export class Salter extends Phaser.Scene{
     this.physics.add.collider(this.bottles, [this.carTop, this.carBottom],(staticObject, bottle)=>{
         (bottle as Bottle).reset(this.player);    
     }, null);
+
+
     //when the thug hits the car
- 
-    //when dean hits the thug
+
+    //when birds hit dean
+    this.physics.add.collider(this.player, this.arialEnemies, (player, enemy)=>{
+        if(this.isPlayerHit == false){
+            this.isPlayerHit = true;
+
+            
+            //TODO: probably should put player.damage() here and thug.attack
+            this.player.immune = true;        
+            
+            //this.input.keyboard.enabled =  false;
+
+            this.cameras.main.shake(32);
+            this.player.anims.play('deanKnockback', 0);
+
+            if(this.playerHealth >= 1){
+                this.player.alpha = 0.5;
+                this.events.emit('playerHit', this.player);
+                if(this.player.flipX == false){
+                    this.player.setVelocityX(-300);
+                }
+                else{
+                    this.player.setVelocityX(300);
+                }
+            }
+            else if(this.playerHealth <= 0 && !this.murtSceneStarted){
+                this.player.anims.play('deanKnockdown',0);
+                console.log("You should have died now" + this.playerHealth);
+                this.player.body.destroy();
+                // this.scene.stop();
+                // //play gameover scene
+                // this.scene.launch('GameOver');
+
+                if(this.player.flipX == false){
+                    this.player.setVelocityX(-300);
+                }
+                else{
+                    this.player.setVelocityX(300);
+                }
+            }
+            this.playerHealth--;
+            setTimeout(()=>{
+                if (this.playerHealth >= 0){
+                    this.isPlayerHit = false;
+                    this.input.keyboard.enabled =  true;
+                    this.player.alpha = 1;
+                }
+                this.player.setVelocityX(0);
+            },300);
+        }   
+
+    });
+    //when dean and thug collide
     this.physics.add.collider(this.player, this.enemies, (player, enemy)=>{
         if(this.isPlayerHit == false){
             this.isPlayerHit = true;
@@ -441,9 +501,14 @@ export class Salter extends Phaser.Scene{
                     this.player.setVelocityX(300);
                 }
             }
-            else if(this.playerHealth <= 0){
+            else if(this.playerHealth <= 0 && !this.murtSceneStarted){
                 this.player.anims.play('deanKnockdown',0);
                 console.log("You should have died now" + this.playerHealth);
+                this.player.body.destroy();
+                // this.scene.stop();
+                // //play gameover scene
+                // this.scene.launch('GameOver');
+
                 if(this.player.flipX == false){
                     this.player.setVelocityX(-300);
                 }
@@ -475,7 +540,7 @@ export class Salter extends Phaser.Scene{
         this.arialEnemies.children.iterate((child)=>{
             if (child.x <= 400) child.flipX;
         })
-        if(this.player.x >= 9750 && this.murtScene == false){
+        if(this.player.x >= 9750 && !this.murtSceneStarted){
             this.playMurtCutscene();
         }
         else{
@@ -557,14 +622,15 @@ export class Salter extends Phaser.Scene{
         })
         setTimeout(()=>{
             setTimeout(()=>{
-                this.murt.setFrame('murtstanding')
+                this.murt.setFrame('murtstanding');
+                this.scene.launch('DialogBox', {dialog: "It's a nice day for a soft wedding.",
+             camera: this.cameras.main, speaker: 'murt'});
             },1700)
             this.murt.setVelocityX(0)
             this.murt.body.allowGravity = true;
         }, 2000)
-        this.spawnJoss();
         // console.log(this.cameras.main);
-        this.murtScene = true;
+        this.murtSceneStarted = true;
     }
 
     spawnJoss(){
@@ -575,10 +641,10 @@ export class Salter extends Phaser.Scene{
         setTimeout(()=>{
             this.joss.setVelocityX(0);
             this.joss.anims.stop();
-            this.joss.setFrame('jossstanding');
-            this.player.setFrame('deanknockdown7');
-            this.scene.launch('DialogBox', {dialog: "FUCK OFF MURT! PREPARE TO GET FUCKED..\nAND I DON'T MEAN BY CENTIS!",
-            camera: this.cameras.main, speaker: 'joss'});
+            // this.joss.setFrame('jossstanding');
+            // this.player.setFrame('deanknockdown7');
+            // this.scene.launch('DialogBox', {dialog: "FUCK OFF MURT! PREPARE TO GET FUCKED..\nAND I DON'T MEAN BY CENTIS!",
+            // camera: this.cameras.main, speaker: 'joss'});
             
         
         },5000)

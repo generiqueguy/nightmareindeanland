@@ -50,7 +50,7 @@ export default class DeanApt extends Phaser.Scene {
       let scale = Math.max(scaleX, scaleY)
 
       //add objects
-      this.pc = this.physics.add.staticImage(-170,650,'pc').setScale(2)//.refreshBody().setBodySize(200,50, true);
+      this.pc = this.physics.add.staticImage(-170,650,'pc').setScale(2)
       this.tv = this.physics.add.staticImage(0,650,'tv').setScale(2.3);
 
       this.rabbitCage = this.physics.add.staticImage(600,650,'rabbitCage').setScale(2.3)
