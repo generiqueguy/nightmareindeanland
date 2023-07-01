@@ -5,7 +5,7 @@ import HUD from './scenes/hud';
 import { Intro } from './scenes/intro';
 import { Salter } from './scenes/salter/salter';
 import { Title } from './scenes/title';
-import GameOver from './scenes/gameover';
+import { GameOver } from './scenes/gameover';
 
 var config = {
     type: Phaser.AUTO,
