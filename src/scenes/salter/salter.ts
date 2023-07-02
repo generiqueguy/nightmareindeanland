@@ -506,7 +506,6 @@ export class Salter extends Phaser.Scene{
                 console.log("You should have died now" + this.playerHealth);
                 this.player.body.destroy();
                 //play gameover scene after 2 seconds
-                this.scene.stop();
                 this.scene.launch('GameOver');
                 if(this.player.flipX == false){
                     this.player.setVelocityX(-300);
